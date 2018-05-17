@@ -23,8 +23,30 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file
-/// \brief
+/// \file DetectorConstruction.hh
+/// \brief Definition of the DetectorConstruction class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#ifndef DetectorConstruction_h
+#define DetectorConstruction_h 1
+
+#include "G4VUserDetectorConstruction.hh"
+
+class G4VPhysicalVolume;
+
+/**
+\brief Detector construction class to define materials and geometry.
+
+*/
+class DetectorConstruction : public G4VUserDetectorConstruction
+{
+  public:
+    DetectorConstruction();
+    virtual ~DetectorConstruction();
+
+    virtual G4VPhysicalVolume* Construct();
+};
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
