@@ -28,3 +28,74 @@
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "PrimaryGeneratorAction.hh"
+
+#include "G4ParticleGun.hh"
+#include "G4ParticleDefinition.hh"
+#include "G4SystemOfUnits.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+PrimaryGeneratorAction::PrimaryGeneratorAction()
+: G4VUserPrimaryGeneratorAction(),
+  fParticleGun(0)
+{
+  // instanciate G4ParticleGun class
+  G4int n_particle = 1;
+  fParticleGun  = new G4ParticleGun(n_particle);
+
+  // define primary particle type
+  G4ParticleDefinition* particle
+    = particleTable->FindParticle("electron");
+  fParticleGun->SetParticleDefinition(particle);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{
+  delete fParticleGun;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+This function is called at the begining of each event.
+*/
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+{
+  // statistical weight
+  G4double w0 = 1.0;
+
+  // position
+  G4double x0 = 0.0*m;
+  G4double y0 = 0.0*m;
+  G4double z0 = 0.0*m;
+
+  // momentum
+  G4double px0 = 1.0*MeV;
+  G4double py0 = 0.0*MeV;
+  G4double pz0 = 0.0*MeV;
+
+  // initial time
+  G4double t0 = 0.0*s;
+
+  fParticleGun->SetWeight(w0);
+  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
+  fParticleGun->SetParticleMomentum(G4ThreeVector(px0,py0,pz0));
+  fParticleGun->SetTime(t0);
+
+  fParticleGun->GeneratePrimaryVertex(anEvent);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -72,16 +72,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4bool checkOverlaps = true;
 
   // Define World default properties
-  G4double worldXY = 1.*m;
-  G4double worldZ  = 1.*m;
+  G4double worldX  = 0.5*m;
+  G4double worldYZ = 1.*m;
   G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
 
-  // Create solid World
+  // Create World solid
   G4Box* worldS =
     new G4Box("WorldS",                      // name
-              0.5*worldXY,                   // size X
-              0.5*worldXY,                   // size Y
-              0.5*worldZ);                   // size Z
+              0.5*worldX,                    // size X
+              0.5*worldYZ,                   // size Y
+              0.5*worldYZ);                  // size Z
 
   // Create World logical volume
   G4LogicalVolume* worldLV =

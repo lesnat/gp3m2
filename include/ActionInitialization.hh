@@ -43,6 +43,7 @@ class ActionInitialization : public G4VUserActionInitialization
     ActionInitialization();
     virtual ~ActionInitialization();
 
+    // methods from the base class
     virtual void BuildForMaster() const;
     virtual void Build() const;
 
