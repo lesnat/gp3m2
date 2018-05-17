@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 /// \file gp3m2.cc
-/// \brief main file allowing to launch the application into different modes
+/// \brief Main program of gp3m2
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -69,7 +69,7 @@ int main(int argc,char** argv)
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // launch the app with the choosen mode
-  if (argv[1]=="-i" or argc==1)         // interactive mode
+  if (argv[1]=="-i" or argc==1)         // interactive mode (default)
   {
     // initialize interactive session
     UImanager->ApplyCommand("/control/execute init.mac");
@@ -92,6 +92,7 @@ int main(int argc,char** argv)
   }
   else if (argv[1]=="-m" and argc==3)   // launch a macro
   {
+    // launch the macro file
     UImanager->ApplyCommand("/control/execute "+argv[2]);
   }
   else
@@ -103,7 +104,7 @@ int main(int argc,char** argv)
     G4cerr << " gp3m2 -v        :"
            << " launch the application in visualization mode" << G4endl;
     G4cerr << " gp3m2 -m macro  :"
-           << " launch a the macro file `macro`" << G4endl;
+           << " launch the macro file `macro`" << G4endl;
     G4cerr << G4endl;
 
     // return error code
