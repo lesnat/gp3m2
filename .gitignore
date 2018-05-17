@@ -1,0 +1,6 @@
+build/*
+*.root
+*.ascii
+*.xml
+*.csv
+*.out
