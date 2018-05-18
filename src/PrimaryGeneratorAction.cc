@@ -54,7 +54,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   // define primary particle type
   G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4ParticleDefinition* particle
-    = particleTable->FindParticle("electron");
+    = particleTable->FindParticle("e-");
   fParticleGun->SetParticleDefinition(particle);
 }
 
