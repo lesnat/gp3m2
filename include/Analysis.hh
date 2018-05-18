@@ -29,8 +29,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef EDAnalysis_h
-#define EDAnalysis_h 1
+#ifndef Analysis_h
+#define Analysis_h 1
 
 #include "g4root.hh"
 //#include "g4xml.hh"

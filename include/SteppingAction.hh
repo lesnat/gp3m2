@@ -23,8 +23,31 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file
-/// \brief
+/// \file SteppingAction.hh
+/// \brief Definition of the SteppingAction class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#ifndef SteppingAction_h
+#define SteppingAction_h 1
+
+#include "G4UserSteppingAction.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+/**
+\brief 
+
+Thread-local class.
+*/
+class SteppingAction : public G4UserSteppingAction
+{
+  public:
+    SteppingAction(PrimaryGeneratorAction*, DetectorConstruction*, RunAction*);
+   ~SteppingAction();
+
+    virtual void UserSteppingAction(const G4Step*);
+};
+
+#endif
