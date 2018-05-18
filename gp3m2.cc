@@ -69,7 +69,8 @@ int main(int argc,char** argv)
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // launch the app with the choosen mode
-  if (argv[1]=="-i" or argc==1)         // interactive mode (default)
+  G4String mode = argv[1];
+  if (mode=="-i" or argc==1)         // interactive mode (default)
   {
     // initialize interactive session
     UImanager->ApplyCommand("/control/execute init.mac");
@@ -79,7 +80,7 @@ int main(int argc,char** argv)
     ui->SessionStart();
     delete ui;
   }
-  else if (argv[1]=="-v")               // visualization mode
+  else if (mode=="-v")               // visualization mode
   {
     // initialize interactive session and visualization
     UImanager->ApplyCommand("/control/execute init.mac");
@@ -90,10 +91,12 @@ int main(int argc,char** argv)
     ui->SessionStart();
     delete ui;
   }
-  else if (argv[1]=="-m" and argc==3)   // launch a macro
+  else if (mode=="-m" and argc==3)   // launch a macro
   {
     // launch the macro file
-    UImanager->ApplyCommand("/control/execute "+argv[2]);
+    G4String command = "/control/execute ";
+    G4String macro = argv[2];
+    UImanager->ApplyCommand(command+macro);
   }
   else
   {

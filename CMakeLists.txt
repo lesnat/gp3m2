@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(gp2m3)
+project(gp3m2)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -33,8 +33,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(gp2m3 gp2m3.cc ${sources} ${headers})
-target_link_libraries(gp2m3 ${Geant4_LIBRARIES})
+add_executable(gp3m2 gp3m2.cc ${sources} ${headers})
+target_link_libraries(gp3m2 ${Geant4_LIBRARIES})
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -63,4 +63,4 @@ endforeach()
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS gp2m3 DESTINATION bin)
+install(TARGETS gp3m2 DESTINATION bin)
