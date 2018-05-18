@@ -37,14 +37,14 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 /**
-\brief 
+\brief
 
 Thread-local class.
 */
 class SteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction(PrimaryGeneratorAction*, DetectorConstruction*, RunAction*);
+    SteppingAction();
    ~SteppingAction();
 
     virtual void UserSteppingAction(const G4Step*);
