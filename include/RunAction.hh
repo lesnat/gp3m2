@@ -29,8 +29,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef EDRunAction_h
-#define EDRunAction_h 1
+#ifndef RunAction_h
+#define RunAction_h 1
 
 #include "G4UserRunAction.hh"
 
@@ -40,11 +40,11 @@ class G4Run;
 \brief
 
 */
-class EDRunAction : public G4UserRunAction
+class RunAction : public G4UserRunAction
 {
   public:
-    EDRunAction();
-    virtual ~EDRunAction();
+    RunAction();
+    virtual ~RunAction();
 
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
