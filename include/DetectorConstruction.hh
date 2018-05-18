@@ -45,9 +45,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
   public:
     DetectorConstruction();
     virtual ~DetectorConstruction();
-    
+
     // method from the base class
     virtual G4VPhysicalVolume* Construct();
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif
