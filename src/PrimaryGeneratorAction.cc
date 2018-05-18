@@ -40,7 +40,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Instanciate G4ParticleGun and define default primary particles properties
 
 */
 PrimaryGeneratorAction::PrimaryGeneratorAction()
@@ -61,7 +61,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Delete G4ParticleGun instance
 
 */
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
@@ -72,9 +72,9 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Generate primary particles
 
-This function is called at the begining of each event.
+This virtual function is called at the begining of each event
 */
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
