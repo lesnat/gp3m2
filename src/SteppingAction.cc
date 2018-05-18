@@ -33,18 +33,30 @@
 #include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief
 
+*/
 SteppingAction::SteppingAction()
  : G4UserSteppingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief
+
+*/
 SteppingAction::~SteppingAction()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief
+
+This virtual method is called at each Step ends
+*/
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
 }

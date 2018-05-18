@@ -37,9 +37,9 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 /**
-\brief
+\brief Get informations at each G4Step
 
-Thread-local class.
+This class is instanciated in each worker thread
 */
 class SteppingAction : public G4UserSteppingAction
 {
@@ -47,6 +47,7 @@ class SteppingAction : public G4UserSteppingAction
     SteppingAction();
    ~SteppingAction();
 
+   // method from the base class
     virtual void UserSteppingAction(const G4Step*);
 };
 
