@@ -74,7 +74,7 @@ RunAction::~RunAction()
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
   // Open an output file
-  fAnalysisManager->OpenFile();
+  fAnalysisManager->OpenFile("results");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

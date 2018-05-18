@@ -4,3 +4,4 @@ build/*
 *.xml
 *.csv
 *.out
+G4History.macro
