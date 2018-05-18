@@ -31,7 +31,10 @@
 #include "PrimaryGeneratorAction.hh"
 
 #include "G4ParticleGun.hh"
+
 #include "G4ParticleDefinition.hh"
+#include "G4ParticleTable.hh"
+
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -49,6 +52,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   fParticleGun  = new G4ParticleGun(n_particle);
 
   // define primary particle type
+  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
   G4ParticleDefinition* particle
     = particleTable->FindParticle("electron");
   fParticleGun->SetParticleDefinition(particle);
@@ -90,10 +94,10 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   // initial time
   G4double t0 = 0.0*s;
 
-  fParticleGun->SetWeight(w0);
+  //fParticleGun->SetParticleWeight(w0);
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
   fParticleGun->SetParticleMomentum(G4ThreeVector(px0,py0,pz0));
-  fParticleGun->SetTime(t0);
+  fParticleGun->SetParticleTime(t0);
 
   fParticleGun->GeneratePrimaryVertex(anEvent);
 }
