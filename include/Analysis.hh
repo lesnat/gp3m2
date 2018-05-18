@@ -23,29 +23,16 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file ActionInitialization.hh
-/// \brief Definition of the ActionInitialization class
+/// \file Analysis.hh
+/// \brief Selection of the analysis technology
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef ActionInitialization_h
-#define ActionInitialization_h 1
+#ifndef EDAnalysis_h
+#define EDAnalysis_h 1
 
-#include "G4VUserActionInitialization.hh"
+#include "g4root.hh"
+//#include "g4xml.hh"
 
-/**
-\brief
-
-*/
-class ActionInitialization : public G4VUserActionInitialization
-{
-  public:
-    ActionInitialization();
-    virtual ~ActionInitialization();
-
-    // methods from the base class
-    virtual void BuildForMaster() const;
-    virtual void Build() const;
-
-};
+#endif
