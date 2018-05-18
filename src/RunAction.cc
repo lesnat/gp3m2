@@ -37,7 +37,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Create analysis manager an histograms
 
 */
 RunAction::RunAction()
@@ -57,7 +57,7 @@ RunAction::RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Delete analysis manager
 
 */
 RunAction::~RunAction()
@@ -68,8 +68,9 @@ RunAction::~RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Open output file
 
+This user code is executed at the beginning of each run
 */
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
@@ -80,8 +81,9 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Write and close output file
 
+This user code is executed at the beginning of each run
 */
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {

@@ -51,6 +51,7 @@ class RunAction : public G4UserRunAction
     virtual void   EndOfRunAction(const G4Run*);
 
   private:
+    /** Pointer to the G4AnalysisManager instance*/
     G4AnalysisManager* fAnalysisManager;
 };
 
