@@ -35,8 +35,9 @@
 #include "G4VUserActionInitialization.hh"
 
 /**
-\brief
+\brief Instanciate user classes in master or worker threads
 
+This class is instanciated only once
 */
 class ActionInitialization : public G4VUserActionInitialization
 {

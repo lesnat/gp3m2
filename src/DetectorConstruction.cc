@@ -60,7 +60,7 @@ DetectorConstruction::~DetectorConstruction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Construct the geometry
 
 */
 G4VPhysicalVolume* DetectorConstruction::Construct()

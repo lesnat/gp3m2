@@ -37,8 +37,9 @@
 class G4VPhysicalVolume;
 
 /**
-\brief Detector construction class to define materials and geometry.
+\brief Construct geometry
 
+This class is shared and instanciated only once
 */
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
