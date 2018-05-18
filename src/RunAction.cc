@@ -28,3 +28,67 @@
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#include "RunAction.hh"
+#include "Analysis.hh"
+
+#include "G4Run.hh"
+#include "G4SystemOfUnits.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+RunAction::RunAction()
+: G4UserRunAction()
+{
+  // Create analysis manager
+  fAnalysisManager = G4AnalysisManager::Instance();
+  fAnalysisManager->SetVerboseLevel(1);
+  G4cout << "Using " << fAnalysisManager->GetType() 
+         << " analysis manager" << G4endl;
+
+  fAnalysisManager->CreateH1("Ekin", "Kinetic energy of particles" , 
+                            150, 0., 150*MeV);
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+RunAction::~RunAction()
+{
+  delete fAnalysisManager;  
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+void RunAction::BeginOfRunAction(const G4Run* /*run*/)
+{ 
+  // Open an output file
+  fAnalysisManager->OpenFile();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief
+
+*/
+void EDRunAction::EndOfRunAction(const G4Run* /*run*/)
+{  
+  // save histograms 
+  fAnalysisManager->Write();
+  fAnalysisManager->CloseFile();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

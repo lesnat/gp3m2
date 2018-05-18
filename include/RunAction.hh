@@ -23,8 +23,36 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file
-/// \brief
+/// \file RunAction.hh
+/// \brief Definition of the RunAction class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#ifndef EDRunAction_h
+#define EDRunAction_h 1
+
+#include "G4UserRunAction.hh"
+
+class G4Run;
+
+/**
+\brief
+
+*/
+class EDRunAction : public G4UserRunAction
+{
+  public:
+    EDRunAction();
+    virtual ~EDRunAction();
+
+    virtual void BeginOfRunAction(const G4Run*);
+    virtual void   EndOfRunAction(const G4Run*);
+
+  private:
+    G4AnalysisManager* fAnalysisManager;
+};
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+#endif
