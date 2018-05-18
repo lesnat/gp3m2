@@ -30,7 +30,6 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "RunAction.hh"
-#include "Analysis.hh"
 
 #include "G4Run.hh"
 #include "G4SystemOfUnits.hh"

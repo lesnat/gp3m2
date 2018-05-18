@@ -33,6 +33,7 @@
 #define RunAction_h 1
 
 #include "G4UserRunAction.hh"
+#include "Analysis.hh"
 
 class G4Run;
 
