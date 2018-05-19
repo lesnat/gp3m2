@@ -36,16 +36,13 @@
 #endif
 
 #include "G4UImanager.hh"
+#include "G4VisExecutive.hh"
+#include "G4UIExecutive.hh"
 
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
 
-#include "G4VisExecutive.hh"
-#include "G4UIExecutive.hh"
-
-#include "G4VModularPhysicsList.hh"
-//#include "G4PhysListFactory.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 int main(int argc,char** argv)

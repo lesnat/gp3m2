@@ -45,7 +45,11 @@
 
 */
 DetectorConstruction::DetectorConstruction()
-: G4VUserDetectorConstruction()
+: G4VUserDetectorConstruction(),
+  fWorldLV(0),
+  fTargetSizeYZ(1*mm),
+  fTargetSizeX(0),
+  fCheckOverlaps(true)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -68,12 +72,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
 
-  // Option to switch on/off checking of volumes overlaps
-  G4bool checkOverlaps = true;
-
   // Define World default properties
-  G4double worldX  = 0.5*m;
-  G4double worldYZ = 1.*m;
+  G4double worldX  = 0.5*cm;
+  G4double worldYZ = 1.*cm;
   G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
 
   // Create World solid
@@ -84,7 +85,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
               0.5*worldYZ);                  // size Z
 
   // Create World logical volume
-  G4LogicalVolume* worldLV =
+  fWorldLV =
     new G4LogicalVolume(worldS,              // solid
                         worldMat,            // material
                         "WorldLV");          // name
@@ -93,16 +94,65 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4VPhysicalVolume* worldPV =
     new G4PVPlacement(0,                     // no rotation
                       G4ThreeVector(),       // at (0,0,0)
-                      worldLV,               // logical volume
+                      fWorldLV,               // logical volume
                       "World",               // name
                       0,                     // mother  volume
                       false,                 // no boolean operation
                       0,                     // copy number
-                      checkOverlaps);        // overlaps checking
+                      fCheckOverlaps);       // overlaps checking
 
+  AddTargetLayer("G4_Al",50*um);
+  AddTargetLayer("G4_W",50*um);
+  AddTargetLayer("G4_W",50*um);
 
   //always return the World physical volume
   return worldPV;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void DetectorConstruction::AddTargetLayer(G4String materialName, G4double width)
+{
+  G4NistManager* nist = G4NistManager::Instance();
+  G4Material* layerMat = nist->FindOrBuildMaterial(materialName);
+  // G4bool checkOverlaps = true;
+
+  // Create Layer solid
+  G4Box* layerS =
+    new G4Box("LayerS",                      // name
+              width/2,                       // size X
+              fTargetSizeYZ/2,               // size Y
+              fTargetSizeYZ/2);              // size Z
+
+  // Create Layer logical volume
+  G4LogicalVolume* layerLV =
+    new G4LogicalVolume(layerS,              // solid
+                        layerMat,            // material
+                        "LayerLV");          // name
+
+  // New layer position
+  G4ThreeVector position;
+  if (fTargetSizeX==0.)
+  {
+    position = G4ThreeVector(width/2,0,0);
+    fTargetSizeX += width/2;
+  }
+  else
+  {
+    position = G4ThreeVector(fTargetSizeX,0,0);
+  }
+
+  // Create Layer physical volume
+  new G4PVPlacement(0,                     // no rotation
+                    position,              // at (0,0,0)
+                    layerLV,               // logical volume
+                    "Layer",               // name
+                    fWorldLV,              // mother  volume
+                    false,                 // no boolean operation
+                    0,                     // copy number
+                    fCheckOverlaps);       // overlaps checking
+
+  fTargetSizeX += width;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

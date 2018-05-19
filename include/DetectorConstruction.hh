@@ -35,6 +35,7 @@
 #include "G4VUserDetectorConstruction.hh"
 
 class G4VPhysicalVolume;
+class G4VLogicalVolume;
 
 /**
 \brief Construct geometry
@@ -49,6 +50,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // method from the base class
     virtual G4VPhysicalVolume* Construct();
+
+    void AddTargetLayer(G4String materialName, G4double width);
+
+  private:
+    G4bool fCheckOverlaps;
+    G4LogicalVolume* fWorldLV;
+    G4double fTargetSizeYZ;
+    G4double fTargetSizeX;
 };
 
 #endif
