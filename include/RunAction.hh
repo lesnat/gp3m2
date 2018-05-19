@@ -34,8 +34,10 @@
 
 #include "G4UserRunAction.hh"
 #include "Analysis.hh"
+#include "G4ThreeVector.hh"
 
 class G4Run;
+class G4ParticleDefinition;
 
 /**
 \brief
@@ -50,9 +52,18 @@ class RunAction : public G4UserRunAction
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
 
+    void FillData(const G4ParticleDefinition* part,
+                  G4double weight,
+                  G4ThreeVector position,
+                  G4ThreeVector momentum,
+                  G4double time);
   private:
     /** Pointer to the G4AnalysisManager instance*/
     G4AnalysisManager* fAnalysisManager;
+    G4String fFileName;
+    const G4ParticleDefinition* fGamma;
+    const G4ParticleDefinition* fElectron;
+    const G4ParticleDefinition* fPositron;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

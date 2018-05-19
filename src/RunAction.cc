@@ -23,8 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file
-/// \brief
+/// \file RunAction.cc
+/// \brief Implementation of the RunAction class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -34,6 +34,9 @@
 #include "G4Run.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "G4Gamma.hh"
+#include "G4Electron.hh"
+#include "G4Positron.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -41,16 +44,46 @@
 
 */
 RunAction::RunAction()
-: G4UserRunAction()
+: G4UserRunAction(),
+  fFileName("results"),
+  fGamma(0),
+  fElectron(0),
+  fPositron(0)
 {
+  // Get particles definitions
+  fGamma    = G4Gamma::Gamma();
+  fElectron = G4Electron::Electron();
+  fPositron = G4Positron::Positron();
+
   // Create analysis manager
   fAnalysisManager = G4AnalysisManager::Instance();
   fAnalysisManager->SetVerboseLevel(1);
   G4cout << "Using " << fAnalysisManager->GetType()
          << " analysis manager" << G4endl;
 
-  fAnalysisManager->CreateH1("Ekin", "Kinetic energy of particles" ,
-                            150, 0., 150*MeV);
+
+  // Creating Ntuples TODO: In constructor or Initialize ? for several runs
+  fAnalysisManager->SetFirstNtupleId(0);
+  fAnalysisManager->SetFirstNtupleColumnId(0);
+  fAnalysisManager->SetNtupleMerging(true);
+
+  fAnalysisManager->CreateNtuple("electron"   ,"Electron phase space");     // ID=0
+  fAnalysisManager->CreateNtuple("gamma"      ,"Gamma phase space");        // ID=1
+  fAnalysisManager->CreateNtuple("positron"   ,"Positron phase space");     // ID=3
+
+  for (int i=0; i<3; i++) // loop over 3 Ntuples
+  {
+    fAnalysisManager->CreateNtupleDColumn(i, "Weight");
+    fAnalysisManager->CreateNtupleDColumn(i, "x0_um");
+    fAnalysisManager->CreateNtupleDColumn(i, "x1_um");
+    fAnalysisManager->CreateNtupleDColumn(i, "x2_um");
+    fAnalysisManager->CreateNtupleDColumn(i, "p0_MeV");
+    fAnalysisManager->CreateNtupleDColumn(i, "p1_MeV");
+    fAnalysisManager->CreateNtupleDColumn(i, "p2_MeV");
+    fAnalysisManager->CreateNtupleDColumn(i, "time_fs");
+
+    fAnalysisManager->FinishNtuple(i);
+  }
 
 }
 
@@ -75,7 +108,7 @@ This user code is executed at the beginning of each run
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
   // Open an output file
-  fAnalysisManager->OpenFile("results");
+  fAnalysisManager->OpenFile(fFileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -87,9 +120,38 @@ This user code is executed at the beginning of each run
 */
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {
-  // save histograms
+  // save Ntuples
   fAnalysisManager->Write();
   fAnalysisManager->CloseFile();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void RunAction::FillData(const G4ParticleDefinition* part,
+                         G4double weight,
+                         G4ThreeVector position,
+                         G4ThreeVector momentum,
+                         G4double time)
+{
+  G4int NtupleID=-1;
+
+  if (part == fElectron) NtupleID=0;
+  if (part == fGamma)    NtupleID=1;
+  if (part == fPositron) NtupleID=2;
+
+  if (NtupleID!=-1)
+  {
+    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight); // weight by event
+    fAnalysisManager->FillNtupleDColumn(NtupleID,1,position[0]/um);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,2,position[1]/um);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,3,position[2]/um);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,4,momentum[0]/MeV);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,5,momentum[1]/MeV);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,6,momentum[2]/MeV);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,7,1e-3*time/ps);
+
+    fAnalysisManager->AddNtupleRow(NtupleID);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
