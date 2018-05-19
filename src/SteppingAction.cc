@@ -33,6 +33,8 @@
 #include "SteppingAction.hh"
 #include "RunAction.hh"
 
+#include "G4SteppingManager.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
 \brief
