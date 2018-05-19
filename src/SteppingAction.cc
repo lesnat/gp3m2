@@ -31,15 +31,19 @@
 
 
 #include "SteppingAction.hh"
+#include "RunAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
 \brief
 
 */
-SteppingAction::SteppingAction()
- : G4UserSteppingAction()
-{}
+SteppingAction::SteppingAction(RunAction* runAction)
+: G4UserSteppingAction(),
+  fRunAction(0)
+{
+  fRunAction = runAction;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -52,6 +56,8 @@ SteppingAction::~SteppingAction()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include "G4SystemOfUnits.hh"
+
 /**
 \brief
 
@@ -59,5 +65,21 @@ This virtual method is called at each Step ends
 */
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
+  G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+
+  G4Track* aTrack = aStep->GetTrack();
+  const G4ParticleDefinition* particle =
+    aTrack->GetDynamicParticle()->GetDefinition();
+
+  if (postStepPoint->GetStepStatus() == fGeomBoundary &&
+      postStepPoint->GetKineticEnergy() > 0.1*MeV)
+  {
+    G4double      weight    = 1.0;
+    G4ThreeVector position  = postStepPoint->GetPosition();
+    G4ThreeVector momentum  = postStepPoint->GetMomentum();
+    G4double      time      = postStepPoint->GetGlobalTime();
+
+    fRunAction->FillData(particle,weight,position,momentum,time);
+  }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

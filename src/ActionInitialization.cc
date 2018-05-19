@@ -72,9 +72,10 @@ void ActionInitialization::BuildForMaster() const
 */
 void ActionInitialization::Build() const
 {
-  SetUserAction(new RunAction);
+  RunAction* runAction = new RunAction;
+  SetUserAction(runAction);
   SetUserAction(new PrimaryGeneratorAction);
-  SetUserAction(new SteppingAction);
+  SetUserAction(new SteppingAction(runAction));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

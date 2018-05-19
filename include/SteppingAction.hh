@@ -34,6 +34,8 @@
 
 #include "G4UserSteppingAction.hh"
 
+class RunAction;
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 /**
@@ -44,11 +46,14 @@ This class is instanciated in each worker thread
 class SteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction();
+    SteppingAction(RunAction* runAction);
    ~SteppingAction();
 
    // method from the base class
     virtual void UserSteppingAction(const G4Step*);
+
+  private:
+    RunAction* fRunAction;
 };
 
 #endif

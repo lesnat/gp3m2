@@ -65,7 +65,7 @@ RunAction::RunAction()
   // Creating Ntuples TODO: In constructor or Initialize ? for several runs
   fAnalysisManager->SetFirstNtupleId(0);
   fAnalysisManager->SetFirstNtupleColumnId(0);
-  fAnalysisManager->SetNtupleMerging(true);
+  // fAnalysisManager->SetNtupleMerging(true);
 
   fAnalysisManager->CreateNtuple("electron"   ,"Electron phase space");     // ID=0
   fAnalysisManager->CreateNtuple("gamma"      ,"Gamma phase space");        // ID=1
@@ -148,7 +148,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
     fAnalysisManager->FillNtupleDColumn(NtupleID,4,momentum[0]/MeV);
     fAnalysisManager->FillNtupleDColumn(NtupleID,5,momentum[1]/MeV);
     fAnalysisManager->FillNtupleDColumn(NtupleID,6,momentum[2]/MeV);
-    fAnalysisManager->FillNtupleDColumn(NtupleID,7,1e-3*time/ps);
+    fAnalysisManager->FillNtupleDColumn(NtupleID,7,time/(1e-3*ps));
 
     fAnalysisManager->AddNtupleRow(NtupleID);
   }
