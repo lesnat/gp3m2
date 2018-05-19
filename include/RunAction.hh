@@ -38,7 +38,7 @@
 
 class G4Run;
 class G4ParticleDefinition;
-
+class G4GenericMessenger;
 /**
 \brief
 
@@ -57,6 +57,9 @@ class RunAction : public G4UserRunAction
                   G4ThreeVector position,
                   G4ThreeVector momentum,
                   G4double time);
+
+    void SetCommands();
+
   private:
     /** Pointer to the G4AnalysisManager instance*/
     G4AnalysisManager* fAnalysisManager;
@@ -64,6 +67,7 @@ class RunAction : public G4UserRunAction
     const G4ParticleDefinition* fGamma;
     const G4ParticleDefinition* fElectron;
     const G4ParticleDefinition* fPositron;
+    G4GenericMessenger* fMessenger;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -38,6 +38,9 @@
 #include "G4Gamma.hh"
 #include "G4Electron.hh"
 #include "G4Positron.hh"
+
+#include "G4GenericMessenger.hh"
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -49,7 +52,8 @@ RunAction::RunAction()
   fFileName("results"),
   fGamma(0),
   fElectron(0),
-  fPositron(0)
+  fPositron(0),
+  fMessenger(0)
 {
   // Get particles definitions
   fGamma    = G4Gamma::Gamma();
@@ -86,6 +90,9 @@ RunAction::RunAction()
     fAnalysisManager->FinishNtuple(i);
   }
 
+  // Set UI commands
+  fMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -156,3 +163,11 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void RunAction::SetCommands()
+{
+  G4GenericMessenger::Command& setFileNameCmd
+    = fMessenger->DeclareProperty("setFileName",
+                                fFileName,
+                                "Change output file names");
+}
