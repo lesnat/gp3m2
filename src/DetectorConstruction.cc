@@ -38,6 +38,7 @@
 #include "G4PVPlacement.hh"
 #include "G4SystemOfUnits.hh"
 
+#include "G4GenericMessenger.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -49,8 +50,13 @@ DetectorConstruction::DetectorConstruction()
   fWorldLV(0),
   fTargetSizeYZ(1*mm),
   fTargetSizeX(0),
-  fCheckOverlaps(true)
-{}
+  fNumberOfLayers(0),
+  fCheckOverlaps(true),
+  fMessenger(0)
+{
+  fMessenger = new G4GenericMessenger(this,"/target/","Manage target layers");
+  SetCommands();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -101,21 +107,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                       0,                     // copy number
                       fCheckOverlaps);       // overlaps checking
 
-  AddTargetLayer("G4_Al",50*um);
-  AddTargetLayer("G4_W",50*um);
-  AddTargetLayer("G4_W",50*um);
-
   //always return the World physical volume
   return worldPV;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void DetectorConstruction::AddTargetLayer(G4String materialName, G4double width)
+void DetectorConstruction::AddTargetLayer(G4String materialName,
+                                          G4double width_um)
 {
   G4NistManager* nist = G4NistManager::Instance();
   G4Material* layerMat = nist->FindOrBuildMaterial(materialName);
   // G4bool checkOverlaps = true;
+
+  G4double width = width_um * um;
 
   // Create Layer solid
   G4Box* layerS =
@@ -149,10 +154,21 @@ void DetectorConstruction::AddTargetLayer(G4String materialName, G4double width)
                     "Layer",               // name
                     fWorldLV,              // mother  volume
                     false,                 // no boolean operation
-                    0,                     // copy number
+                    fNumberOfLayers,       // copy number
                     fCheckOverlaps);       // overlaps checking
 
   fTargetSizeX += width;
+  fNumberOfLayers++;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void DetectorConstruction::SetCommands()
+{
+  G4GenericMessenger::Command& addLayerCmd
+    = fMessenger->DeclareMethod("addLayer",
+                                &DetectorConstruction::AddTargetLayer,
+                                "Add a new layer to the target");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

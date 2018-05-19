@@ -1,5 +1,9 @@
 # Macro file for the initialization of visualization
 #
+/vis/initialize
+/target/addLayer G4_Al 50
+/target/addLayer G4_Al 50
+/target/addLayer G4_Al 50
 # Use this open statement to create an OpenGL view:
 /vis/open OGL 600x600-0+0
 #

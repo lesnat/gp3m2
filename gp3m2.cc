@@ -84,7 +84,7 @@ int main(int argc,char** argv)
     // initialize interactive session and visualization
     G4VisManager* visManager = new G4VisExecutive;
     visManager->Initialize();
-    UImanager->ApplyCommand("/control/execute init.mac");
+    //UImanager->ApplyCommand("/control/execute init.mac");
     UImanager->ApplyCommand("/control/execute init_vis.mac");
 
     // start interactive session
