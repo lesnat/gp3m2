@@ -38,7 +38,7 @@
 #include "G4UImanager.hh"
 
 #include "DetectorConstruction.hh"
-#include "QBBC.hh"
+#include "PhysicsList.hh"
 #include "ActionInitialization.hh"
 
 #include "G4VisExecutive.hh"
@@ -59,16 +59,7 @@ int main(int argc,char** argv)
 
   // set mandatory initialization classes
   runManager->SetUserInitialization(new DetectorConstruction);
-  // runManager->SetUserInitialization(new G4EmPenelopePhysics);
-  // G4VPhysicsConstructor* physicsList = new G4EmPenelopePhysics;
-  // G4PhysListFactory physListFactory;
-  // G4VModularPhysicsList* physicsList
-  //   = physListFactory.GetReferencePhysList("G4EmPenelopePhysics");
-  // physicsList->SetVerboseLevel(1);
-  // runManager->SetUserInitialization(physicsList);
-  G4VModularPhysicsList* physicsList = new QBBC;
-  physicsList->SetVerboseLevel(1);
-  runManager->SetUserInitialization(physicsList);
+  runManager->SetUserInitialization(new PhysicsList);
 
   // set user action classes
   runManager->SetUserInitialization(new ActionInitialization);
