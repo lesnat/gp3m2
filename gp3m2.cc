@@ -94,6 +94,8 @@ int main(int argc,char** argv)
   else if (mode=="-v")               // visualization mode
   {
     // initialize interactive session and visualization
+    G4VisManager* visManager = new G4VisExecutive;
+    visManager->Initialize();
     UImanager->ApplyCommand("/control/execute init.mac");
     UImanager->ApplyCommand("/control/execute init_vis.mac");
 
@@ -101,6 +103,7 @@ int main(int argc,char** argv)
     G4UIExecutive* ui = new G4UIExecutive(argc, argv);
     ui->SessionStart();
     delete ui;
+    delete visManager;
   }
   else if (mode=="-m" and argc==3)   // launch a macro
   {
