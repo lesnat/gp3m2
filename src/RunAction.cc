@@ -31,7 +31,8 @@
 
 #include "RunAction.hh"
 
-#include "G4Run.hh"
+#include "G4RunManager.hh" // includes all the needed classes for RunAction
+
 #include "G4SystemOfUnits.hh"
 
 #include "G4Gamma.hh"

@@ -33,7 +33,7 @@
 #include "SteppingAction.hh"
 #include "RunAction.hh"
 
-#include "G4SteppingManager.hh"
+#include "G4SteppingManager.hh" // includes all the needed classes for SteppingAction
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
@@ -76,7 +76,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
   if (postStepPoint->GetStepStatus() == fGeomBoundary &&
       postStepPoint->GetKineticEnergy() > 0.1*MeV)
   {
-    G4double      weight    = 1.0;
+    G4double      weight    = postStepPoint->GetWeight();
     G4ThreeVector position  = postStepPoint->GetPosition();
     G4ThreeVector momentum  = postStepPoint->GetMomentum();
     G4double      time      = postStepPoint->GetGlobalTime();
