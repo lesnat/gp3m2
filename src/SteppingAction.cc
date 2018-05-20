@@ -37,33 +37,34 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
-\brief
+\brief Save pointer to the current RunAction instance.
 
 */
 SteppingAction::SteppingAction(RunAction* runAction)
 : G4UserSteppingAction(),
-  fRunAction(0)
-{
-  fRunAction = runAction;
-}
+  fRunAction(runAction)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Delete pointer to the current RunAction instance.
 
 */
 SteppingAction::~SteppingAction()
-{}
+{
+  delete fRunAction;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "G4SystemOfUnits.hh"
 
 /**
-\brief
+\brief Add a new line to the corresponding Ntuple
+       if the particle is crossing a boundary.
 
-This virtual method is called at each Step ends
+This virtual method is called at each Step ends.
 */
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {

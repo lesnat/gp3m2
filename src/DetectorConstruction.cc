@@ -31,7 +31,6 @@
 
 #include "DetectorConstruction.hh"
 
-#include "G4RunManager.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -42,7 +41,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Initialize pointers, set default values and creates UI commands.
 
 */
 DetectorConstruction::DetectorConstruction()
@@ -61,17 +60,20 @@ DetectorConstruction::DetectorConstruction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Delete messenger.
 
 */
 DetectorConstruction::~DetectorConstruction()
-{}
+{
+  delete fMessenger;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Construct the geometry
+\brief Construct the default World volume
 
+The world is defined as a 0.5 x 1 x 1 cm box of G4_Galactic material.
 */
 G4VPhysicalVolume* DetectorConstruction::Construct()
 {
@@ -113,6 +115,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Add a new layer to the target.
+
+\param materialName : Material name of the new layer
+\param width_um : Width of the new layer (in um)
+
+The transverse size of the new layer is always the same default value.
+
+The new width is added to fTargetSizeX and fNumberOfLayers is incremented.
+*/
 void DetectorConstruction::AddTargetLayer(G4String materialName,
                                           G4double width_um)
 {
@@ -163,6 +175,13 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Set commands to be interpreted with the UI
+
+The AddTargetLayer function can be called in UI in the following way :
+
+/target/addLayer materialName width_um
+*/
 void DetectorConstruction::SetCommands()
 {
   G4GenericMessenger::Command& addLayerCmd

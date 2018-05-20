@@ -1,4 +1,5 @@
-build/*
+build/
+doc/build/
 *.root
 *.ascii
 *.xml

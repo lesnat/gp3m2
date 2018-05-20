@@ -38,8 +38,7 @@
 class G4ParticleGun;
 
 /**
-\brief Primary generator action class
-       to launch primary particles with particle gun
+\brief Launch primary particles with particle gun
 
 This class is instanciated in each worker thread
 */
@@ -47,9 +46,9 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
     PrimaryGeneratorAction();
-    virtual ~PrimaryGeneratorAction();
+    ~PrimaryGeneratorAction();
 
-    // method from the base class
+    // base class methods
     virtual void GeneratePrimaries(G4Event*);
 
   private:

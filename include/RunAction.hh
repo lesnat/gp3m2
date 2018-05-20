@@ -39,35 +39,36 @@
 class G4Run;
 class G4ParticleDefinition;
 class G4GenericMessenger;
+
 /**
-\brief
+\brief Creates and writes diagnostic output files.
 
 */
 class RunAction : public G4UserRunAction
 {
   public:
     RunAction();
-    virtual ~RunAction();
+    ~RunAction();
 
+    // base class methods
     virtual void BeginOfRunAction(const G4Run*);
     virtual void   EndOfRunAction(const G4Run*);
 
+    // user methods
     void FillData(const G4ParticleDefinition* part,
                   G4double weight,
                   G4ThreeVector position,
                   G4ThreeVector momentum,
                   G4double time);
-
     void SetCommands();
 
   private:
-    /** Pointer to the G4AnalysisManager instance*/
-    G4AnalysisManager* fAnalysisManager;
-    G4String fFileName;
-    const G4ParticleDefinition* fGamma;
-    const G4ParticleDefinition* fElectron;
-    const G4ParticleDefinition* fPositron;
-    G4GenericMessenger* fMessenger;
+    G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
+    G4String fFileName; /**< \brief Output file name.*/
+    const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
+    const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
+    const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
+    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

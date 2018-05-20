@@ -44,7 +44,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Create analysis manager an histograms
+\brief Create analysis manager and Ntuples
 
 */
 RunAction::RunAction()
@@ -124,7 +124,7 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 /**
 \brief Write and close output file
 
-This user code is executed at the beginning of each run
+This user code is executed at the end of each run
 */
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {
@@ -135,6 +135,11 @@ void RunAction::EndOfRunAction(const G4Run* /*run*/)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Add a new line to the corresponding Ntuple.
+
+All the quantities must be given in code units.
+*/
 void RunAction::FillData(const G4ParticleDefinition* part,
                          G4double weight,
                          G4ThreeVector position,
@@ -164,6 +169,13 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Set commands to be interpreted with the UI.
+
+The output file name can be changed in UI in the following way :
+
+/output/setFileName fileName
+*/
 void RunAction::SetCommands()
 {
   G4GenericMessenger::Command& setFileNameCmd

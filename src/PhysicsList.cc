@@ -37,6 +37,10 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Set default cut values, verbosity and instanciate desired pre-packages PhysicsList.
+
+*/
 PhysicsList::PhysicsList()
 : G4VModularPhysicsList()
 {
@@ -52,11 +56,22 @@ PhysicsList::PhysicsList()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Delete pre-packaged PhysicsList instance
+
+*/
 PhysicsList::~PhysicsList()
-{}
+{
+  delete fEmPhysicsList;
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Construct the particles to consider in the simulation.
+
+The list of particles is taken from choosen pre-packaged PhysicsList.
+*/
 void PhysicsList::ConstructParticle()
 {
   fEmPhysicsList->ConstructParticle();
@@ -64,10 +79,14 @@ void PhysicsList::ConstructParticle()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Construct the physics processes to use in the simulation.
+
+The list of procresses is taken from choosen pre-packaged PhysicsList.
+*/
 void PhysicsList::ConstructProcess()
 {
   // Transportation
-  //
   AddTransportation();
 
   // Electromagnetic physics list
@@ -76,10 +95,14 @@ void PhysicsList::ConstructProcess()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Call base class method to set cuts which default value can be
+       modified via /run/setCut/* commands
+
+?
+*/
 void PhysicsList::SetCuts()
 {
- // call base class method to set cuts which default value can be
- // modified via /run/setCut/* commands
  G4VUserPhysicsList::SetCuts();
 
  DumpCutValuesTable();

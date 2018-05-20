@@ -38,18 +38,23 @@ class G4VPhysicsConstructor;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+/**
+\brief Define particles and processes to consider in the simulation.
+
+*/
 class PhysicsList: public G4VModularPhysicsList
 {
   public:
     PhysicsList();
    ~PhysicsList();
 
+    // base class methods
     virtual void ConstructParticle();
     virtual void ConstructProcess();
     virtual void SetCuts();
 
   private:
-    G4VPhysicsConstructor*  fEmPhysicsList;
+    G4VPhysicsConstructor*  fEmPhysicsList; /**< \brief Pointer to the used pre-packaged PhysicsList.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

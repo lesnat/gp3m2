@@ -46,21 +46,22 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
     DetectorConstruction();
-    virtual ~DetectorConstruction();
+    ~DetectorConstruction();
 
-    // method from the base class
+    // base class methods
     virtual G4VPhysicalVolume* Construct();
 
+    // user methods
     void AddTargetLayer(G4String materialName, G4double width_um);
     void SetCommands();
 
   private:
-    G4bool fCheckOverlaps;
-    G4LogicalVolume* fWorldLV;
-    G4double fTargetSizeYZ;
-    G4double fTargetSizeX;
-    G4int fNumberOfLayers;
-    G4GenericMessenger* fMessenger;
+    G4bool fCheckOverlaps; /**< \brief Check if volumes are overlapping.*/
+    G4LogicalVolume* fWorldLV; /**< \brief Pointer to the world logical volume.*/
+    G4double fTargetSizeYZ; /**< \brief Target transverse size.*/
+    G4double fTargetSizeX; /**< \brief Total target longitudinal size.*/
+    G4int fNumberOfLayers; /**< \brief Total number of layers in the target.*/
+    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
 };
 
 #endif

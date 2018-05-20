@@ -39,7 +39,7 @@ class RunAction;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 /**
-\brief Get informations at each G4Step
+\brief Export particles phase-space at each geometry boundary.
 
 This class is instanciated in each worker thread
 */
@@ -49,11 +49,11 @@ class SteppingAction : public G4UserSteppingAction
     SteppingAction(RunAction* runAction);
    ~SteppingAction();
 
-   // method from the base class
+   // base class methods
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    RunAction* fRunAction;
+    RunAction* fRunAction; /**< \brief Pointer to the RunAction instance of the current thread.*/
 };
 
 #endif
