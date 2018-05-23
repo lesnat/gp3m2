@@ -55,7 +55,7 @@ RunAction::RunAction()
   fElectron(0),
   fPositron(0),
   fOutMessenger(0),
-  fInMessenger(0),
+  fInMessenger(0)
 {
   // Get particles definitions
   fGamma    = G4Gamma::Gamma();
@@ -173,6 +173,54 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
+\brief 
+
+
+*/
+void RunAction::ReadInput()
+{
+  // TODO: Clear fW,fX,... before import
+  std::ifstream line;
+  line.open(fInFileName);
+
+  G4double w,x,y,z,px,py,pz,t;
+  
+  while (!line.eof()) // TODO: if file[0]!="#"
+  {
+    line >> w >> x >> y >> z >> px >> py >> pz >> t;
+    fW.push_back(w)    ;
+    fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
+    fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
+    fT.push_back(t)    ;
+  }
+  
+  line.close();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief 
+
+
+*/
+G4double RunAction::GetEntry(G4String variable, G4int id)
+{
+  if (variable=="w") return fW[id];
+  
+  if (variable=="x") return fX[id];
+  if (variable=="y") return fY[id];
+  if (variable=="z") return fZ[id];
+  
+  if (variable=="px") return fPx[id];
+  if (variable=="py") return fPy[id];
+  if (variable=="pz") return fPz[id];
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+/**
 \brief Set commands to be interpreted with the UI.
 
 The output file name can be changed in UI in the following way :
@@ -184,10 +232,10 @@ void RunAction::SetCommands()
   G4GenericMessenger::Command& setOutFileNameCmd
     = fOutMessenger->DeclareProperty("setFileName",
                                 fOutFileName,
-                                "Change output file names");
+                                "Change output file name");
                                 
   G4GenericMessenger::Command& setInFileNameCmd
-    = fOutMessenger->DeclareProperty("setFileName",
+    = fInMessenger->DeclareProperty("setFileName",
                                 fInFileName,
                                 "Change input file name");
 }

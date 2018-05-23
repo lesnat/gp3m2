@@ -19,6 +19,7 @@
 /target/addLayer G4_Fe 50
 /target/addLayer G4_W 50
 #
+/input/setFileName res.dat
 /output/setFileName test
 # gamma 6 MeV to the direction (0.,0.,1.)
 #

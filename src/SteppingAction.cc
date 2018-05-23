@@ -53,7 +53,7 @@ SteppingAction::SteppingAction(RunAction* runAction)
 */
 SteppingAction::~SteppingAction()
 {
-  delete fRunAction;
+  //delete fRunAction;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

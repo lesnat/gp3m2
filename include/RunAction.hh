@@ -61,6 +61,8 @@ class RunAction : public G4UserRunAction
                   G4ThreeVector momentum,
                   G4double time);
     void SetCommands();
+    void ReadInput();
+    G4double GetEntry(G4String variable, G4int id);
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
@@ -71,6 +73,8 @@ class RunAction : public G4UserRunAction
     const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
     G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
+    
+    std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
