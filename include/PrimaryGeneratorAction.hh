@@ -35,7 +35,7 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 
-class G4ParticleGun;
+class G4ParticleDefinition;
 class RunAction;
 
 /**
@@ -54,7 +54,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
   private:
     /** Pointer to the G4ParticleGun instance*/
-    G4ParticleGun*  fParticleGun;
+    G4ParticleDefinition*  fParticleDefinition;
     RunAction* fMasterRunAction;
 };
 
