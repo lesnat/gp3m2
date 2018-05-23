@@ -64,11 +64,13 @@ class RunAction : public G4UserRunAction
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
-    G4String fFileName; /**< \brief Output file name.*/
+    G4String fOutFileName; /**< \brief Output file name.*/
+    G4String fInFileName; /**< \brief Input file name.*/
     const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
     const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
     const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
-    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
+    G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
+    G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

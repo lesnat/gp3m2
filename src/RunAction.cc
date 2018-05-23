@@ -49,11 +49,13 @@
 */
 RunAction::RunAction()
 : G4UserRunAction(),
-  fFileName("results"),
+  fOutFileName("results"),
+  fInFileName(""),
   fGamma(0),
   fElectron(0),
   fPositron(0),
-  fMessenger(0)
+  fOutMessenger(0),
+  fInMessenger(0),
 {
   // Get particles definitions
   fGamma    = G4Gamma::Gamma();
@@ -91,7 +93,8 @@ RunAction::RunAction()
   }
 
   // Set UI commands
-  fMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  fOutMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
   SetCommands();
 }
 
@@ -116,7 +119,7 @@ This user code is executed at the beginning of each run
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
   // Open an output file
-  fAnalysisManager->OpenFile(fFileName);
+  fAnalysisManager->OpenFile(fOutFileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -178,8 +181,13 @@ The output file name can be changed in UI in the following way :
 */
 void RunAction::SetCommands()
 {
-  G4GenericMessenger::Command& setFileNameCmd
-    = fMessenger->DeclareProperty("setFileName",
-                                fFileName,
+  G4GenericMessenger::Command& setOutFileNameCmd
+    = fOutMessenger->DeclareProperty("setFileName",
+                                fOutFileName,
                                 "Change output file names");
+                                
+  G4GenericMessenger::Command& setInFileNameCmd
+    = fOutMessenger->DeclareProperty("setFileName",
+                                fInFileName,
+                                "Change input file name");
 }
