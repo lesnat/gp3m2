@@ -29,6 +29,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 #include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
 
 #include "G4ParticleGun.hh"
 
@@ -43,9 +44,10 @@
 \brief Instanciate G4ParticleGun and define default primary particles properties
 
 */
-PrimaryGeneratorAction::PrimaryGeneratorAction()
+PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* masterRunAction)
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
+  fParticleGun(0),
+  fMasterRunAction(masterRunAction)
 {
   // instanciate G4ParticleGun class
   G4int n_particle = 1;
@@ -78,21 +80,23 @@ This virtual function is called at the begining of each event
 */
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
+  G4int id = 0;
+
   // statistical weight
-  G4double w0 = 1.0;
+  G4double w0 = fMasterRunAction->GetEntry("w",id);
 
   // position
-  G4double x0 = 0.0*m;
-  G4double y0 = 0.0*m;
-  G4double z0 = 0.0*m;
+  G4double x0 = fMasterRunAction->GetEntry("x",id);
+  G4double y0 = fMasterRunAction->GetEntry("y",id);
+  G4double z0 = fMasterRunAction->GetEntry("z",id);
 
   // momentum
-  G4double px0 = 1.0*MeV;
-  G4double py0 = 0.0*MeV;
-  G4double pz0 = 0.0*MeV;
+  G4double px0 = fMasterRunAction->GetEntry("px",id);
+  G4double py0 = fMasterRunAction->GetEntry("py",id);
+  G4double pz0 = fMasterRunAction->GetEntry("pz",id);
 
   // initial time
-  G4double t0 = 0.0*s;
+  G4double t0 = fMasterRunAction->GetEntry("t",id);
 
   //fParticleGun->SetParticleWeight(w0);
   fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));

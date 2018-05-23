@@ -118,6 +118,7 @@ This user code is executed at the beginning of each run
 */
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
+  ReadInput();
   // Open an output file
   fAnalysisManager->OpenFile(fOutFileName);
 }
@@ -215,6 +216,8 @@ G4double RunAction::GetEntry(G4String variable, G4int id)
   if (variable=="px") return fPx[id];
   if (variable=="py") return fPy[id];
   if (variable=="pz") return fPz[id];
+  
+  if (variable=="t") return fT[id];
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

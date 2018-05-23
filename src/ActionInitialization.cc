@@ -41,7 +41,8 @@
 
 */
 ActionInitialization::ActionInitialization()
- : G4VUserActionInitialization()
+: G4VUserActionInitialization(),
+  fMasterRunAction(new RunAction)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -61,7 +62,8 @@ ActionInitialization::~ActionInitialization()
 */
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(new RunAction);
+  //fMasterRunAction = new RunAction;
+  SetUserAction(fMasterRunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,7 +76,7 @@ void ActionInitialization::Build() const
 {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction);
+  SetUserAction(new PrimaryGeneratorAction(fMasterRunAction));
   SetUserAction(new SteppingAction(runAction));
 }
 

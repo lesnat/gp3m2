@@ -36,6 +36,7 @@
 #include "G4ParticleGun.hh"
 
 class G4ParticleGun;
+class RunAction;
 
 /**
 \brief Launch primary particles with particle gun
@@ -45,7 +46,7 @@ This class is instanciated in each worker thread
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    PrimaryGeneratorAction();
+    PrimaryGeneratorAction(RunAction* masterRunAction);
     ~PrimaryGeneratorAction();
 
     // base class methods
@@ -54,6 +55,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
   private:
     /** Pointer to the G4ParticleGun instance*/
     G4ParticleGun*  fParticleGun;
+    RunAction* fMasterRunAction;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
