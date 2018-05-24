@@ -35,13 +35,13 @@
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
 
-class G4ParticleDefinition;
+class G4ParticleTable;
 class RunAction;
 
 /**
-\brief Launch primary particles with particle gun
+\brief Generate primary particles.
 
-This class is instanciated in each worker thread
+This class is instanciated in each worker thread.
 */
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
@@ -51,10 +51,13 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
     // base class methods
     virtual void GeneratePrimaries(G4Event*);
+    
+    // user methods
+    void SetCommands();
 
   private:
-    /** Pointer to the G4ParticleGun instance*/
-    G4ParticleDefinition*  fParticleDefinition;
+    G4String fParticleName;
+    G4ParticleTable* fParticleTable;
     RunAction* fMasterRunAction;
 };
 

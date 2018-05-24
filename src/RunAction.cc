@@ -44,7 +44,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Create analysis manager and Ntuples
+\brief Create analysis manager, Ntuples and set UI commands.
 
 */
 RunAction::RunAction()
@@ -57,19 +57,19 @@ RunAction::RunAction()
   fOutMessenger(0),
   fInMessenger(0)
 {
-  // Get particles definitions
+  // get particles definition
   fGamma    = G4Gamma::Gamma();
   fElectron = G4Electron::Electron();
   fPositron = G4Positron::Positron();
 
-  // Create analysis manager
+  // create analysis manager
   fAnalysisManager = G4AnalysisManager::Instance();
   fAnalysisManager->SetVerboseLevel(1);
   G4cout << "Using " << fAnalysisManager->GetType()
          << " analysis manager" << G4endl;
 
 
-  // Creating Ntuples TODO: In constructor or Initialize ? for several runs
+  // create Ntuples
   fAnalysisManager->SetFirstNtupleId(0);
   fAnalysisManager->SetFirstNtupleColumnId(0);
   // fAnalysisManager->SetNtupleMerging(true);
@@ -92,16 +92,14 @@ RunAction::RunAction()
     fAnalysisManager->FinishNtuple(i);
   }
 
-  // Set UI commands
-  fOutMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
-  fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
+  // set UI commands
   SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Delete analysis manager
+\brief Delete analysis manager.
 
 */
 RunAction::~RunAction()
@@ -112,14 +110,16 @@ RunAction::~RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Open output file
+\brief Read input file & open output file.
 
 This user code is executed at the beginning of each run
 */
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
+  // read input file
   ReadInput();
-  // Open an output file
+  
+  // open output file
   fAnalysisManager->OpenFile(fOutFileName);
 }
 
@@ -200,50 +200,22 @@ void RunAction::ReadInput()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/**
-\brief 
-
-
-*/
-G4double RunAction::GetEntry(G4String variable, G4int id) const
-{
-  if (variable=="w") return fW[id];
-  
-  if (variable=="x") return fX[id];
-  if (variable=="y") return fY[id];
-  if (variable=="z") return fZ[id];
-  
-  if (variable=="px") return fPx[id];
-  if (variable=="py") return fPy[id];
-  if (variable=="pz") return fPz[id];
-  
-  if (variable=="t") return fT[id];
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief 
+\brief Define UI commands.
 
+The input file name can be changed by using 
+/input/setFileName fileName
 
-*/
-G4int RunAction::GetLength() const
-{
-  return fW.size();
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-
-/**
-\brief Set commands to be interpreted with the UI.
-
-The output file name can be changed in UI in the following way :
-
+The output file name can be changed by using 
 /output/setFileName fileName
+
 */
 void RunAction::SetCommands()
 {
+  fOutMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
+
   G4GenericMessenger::Command& setOutFileNameCmd
     = fOutMessenger->DeclareProperty("setFileName",
                                 fOutFileName,

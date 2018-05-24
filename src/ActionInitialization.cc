@@ -57,7 +57,7 @@ ActionInitialization::~ActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Instanciate objects for the master thread
+\brief Instanciate objects for the master thread.
 
 */
 void ActionInitialization::BuildForMaster() const
@@ -68,7 +68,7 @@ void ActionInitialization::BuildForMaster() const
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Instanciate objects for the worker threads
+\brief Instanciate objects for the worker threads.
 
 */
 void ActionInitialization::Build() const

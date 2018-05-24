@@ -38,7 +38,7 @@
 
 class G4Run;
 class G4ParticleDefinition;
-class G4GenericMessenger;
+#include "G4GenericMessenger.hh"
 
 /**
 \brief Creates and writes diagnostic output files.
@@ -62,8 +62,25 @@ class RunAction : public G4UserRunAction
                   G4double time);
     void SetCommands();
     void ReadInput();
-    G4double GetEntry(G4String variable, G4int id) const;
-    G4int GetLength() const;
+    
+    // get/set methods
+    G4double GetEntry(G4String variable, G4int id) const
+    {
+      if (variable=="w") return fW[id];
+      
+      if (variable=="x") return fX[id];
+      if (variable=="y") return fY[id];
+      if (variable=="z") return fZ[id];
+      
+      if (variable=="px") return fPx[id];
+      if (variable=="py") return fPy[id];
+      if (variable=="pz") return fPz[id];
+      
+      if (variable=="t") return fT[id];
+    }
+    G4int GetLength() const {return fW.size();};
+    G4GenericMessenger* GetInMessenger() {return fInMessenger;};
+    G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
