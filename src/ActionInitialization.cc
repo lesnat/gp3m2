@@ -62,7 +62,6 @@ ActionInitialization::~ActionInitialization()
 */
 void ActionInitialization::BuildForMaster() const
 {
-  //fMasterRunAction = new RunAction;
   SetUserAction(fMasterRunAction);
 }
 

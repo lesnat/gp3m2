@@ -205,7 +205,7 @@ void RunAction::ReadInput()
 
 
 */
-G4double RunAction::GetEntry(G4String variable, G4int id)
+G4double RunAction::GetEntry(G4String variable, G4int id) const
 {
   if (variable=="w") return fW[id];
   
@@ -218,6 +218,18 @@ G4double RunAction::GetEntry(G4String variable, G4int id)
   if (variable=="pz") return fPz[id];
   
   if (variable=="t") return fT[id];
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief 
+
+
+*/
+G4int RunAction::GetLength() const
+{
+  return fW.size();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

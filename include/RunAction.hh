@@ -62,7 +62,8 @@ class RunAction : public G4UserRunAction
                   G4double time);
     void SetCommands();
     void ReadInput();
-    G4double GetEntry(G4String variable, G4int id);
+    G4double GetEntry(G4String variable, G4int id) const;
+    G4int GetLength() const;
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/

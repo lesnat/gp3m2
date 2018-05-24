@@ -39,6 +39,7 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
 
+#include "Randomize.hh"
 #include "G4SystemOfUnits.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,7 +77,7 @@ This virtual function is called at the begining of each event
 */
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  G4int id = 0;
+  G4int id = std::floor(G4UniformRand() * fMasterRunAction->GetLength());
 
   // statistical weight
   G4double w0 = fMasterRunAction->GetEntry("w",id);
