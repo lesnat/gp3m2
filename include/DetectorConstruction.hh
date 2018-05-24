@@ -56,11 +56,11 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     void SetCommands();
 
   private:
-    G4bool fCheckOverlaps; /**< \brief Check if volumes are overlapping.*/
-    G4LogicalVolume* fWorldLV; /**< \brief Pointer to the world logical volume.*/
-    G4double fTargetSizeYZ; /**< \brief Target transverse size.*/
-    G4double fTargetSizeX; /**< \brief Total target longitudinal size.*/
     G4int fNumberOfLayers; /**< \brief Total number of layers in the target.*/
+    G4bool fCheckOverlaps; /**< \brief Check if volumes are overlapping.*/
+    G4double fTargetSizeX; /**< \brief Total target longitudinal size.*/
+    G4double fTargetSizeYZ; /**< \brief Target transverse size.*/
+    G4LogicalVolume* fWorldLV; /**< \brief Pointer to the world logical volume.*/
     G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
 };
 

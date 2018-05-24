@@ -130,12 +130,17 @@ The primary particle type can be changed by using
 */
 void PrimaryGeneratorAction::SetCommands()
 {
+  // get UI messenger
   G4GenericMessenger* messenger = fMasterRunAction->GetInMessenger();
   
+  // set commands
   G4GenericMessenger::Command& setParticleNameCmd
   = messenger->DeclareProperty("setParticle",
                               fParticleName,
                               "Change particle type");
+                              
+  // set commands properties
+  setParticleNameCmd.SetStates(G4State_Idle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

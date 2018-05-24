@@ -213,9 +213,11 @@ The output file name can be changed by using
 */
 void RunAction::SetCommands()
 {
+  // get UI messengers
   fOutMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
   fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
 
+  // define commands
   G4GenericMessenger::Command& setOutFileNameCmd
     = fOutMessenger->DeclareProperty("setFileName",
                                 fOutFileName,
@@ -225,4 +227,8 @@ void RunAction::SetCommands()
     = fInMessenger->DeclareProperty("setFileName",
                                 fInFileName,
                                 "Change input file name");
+                                
+  // set commands properties
+  setInFileNameCmd.SetStates(G4State_Idle);
+  setOutFileNameCmd.SetStates(G4State_Idle);
 }

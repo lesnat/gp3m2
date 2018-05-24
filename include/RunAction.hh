@@ -65,19 +65,15 @@ class RunAction : public G4UserRunAction
     
     // get/set methods
     G4double GetEntry(G4String variable, G4int id) const
-    {
-      if (variable=="w") return fW[id];
-      
-      if (variable=="x") return fX[id];
-      if (variable=="y") return fY[id];
-      if (variable=="z") return fZ[id];
-      
-      if (variable=="px") return fPx[id];
-      if (variable=="py") return fPy[id];
-      if (variable=="pz") return fPz[id];
-      
-      if (variable=="t") return fT[id];
-    }
+    { if      (variable=="w")  return fW[id]; 
+      else if (variable=="x")  return fX[id];
+      else if (variable=="y")  return fY[id];
+      else if (variable=="z")  return fZ[id];
+      else if (variable=="px") return fPx[id];
+      else if (variable=="py") return fPy[id];
+      else if (variable=="pz") return fPz[id];
+      else if (variable=="t")  return fT[id];
+      else G4cerr << "Unknown variable name in RunAction::GetEntry."<< G4endl; throw;};
     G4int GetLength() const {return fW.size();};
     G4GenericMessenger* GetInMessenger() {return fInMessenger;};
     G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
