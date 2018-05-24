@@ -1,7 +1,7 @@
 # Macro file for gp3m2
 #
 # Can be run in batch, without graphic
-# or interactively: Idle> /control/execute run1.mac
+# or interactively: Idle> /control/execute run.mac
 #
 # Change the default number of workers (in multi-threading mode)
 #/run/numberOfWorkers 4
@@ -19,19 +19,10 @@
 /target/addLayer G4_Fe 50
 /target/addLayer G4_W 50
 #
+/input/setFileName test_input.dat
+/input/setParticle e-
+
 /output/setFileName test
-# gamma 6 MeV to the direction (0.,0.,1.)
-#
-/gun/particle e-
-/gun/energy 6 MeV
-#
+
 /run/beamOn 100
-#
-# /target/addLayer G4_W 50
-# /target/addLayer G4_W 50
-# /target/addLayer G4_W 50
-# /output/setFileName test2
-# /gun/particle gamma
-# /gun/energy 1.0 MeV
-# #
-# /run/beamOn 100
+

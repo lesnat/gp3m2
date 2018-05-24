@@ -38,7 +38,7 @@
 
 class G4Run;
 class G4ParticleDefinition;
-class G4GenericMessenger;
+#include "G4GenericMessenger.hh"
 
 /**
 \brief Creates and writes diagnostic output files.
@@ -61,14 +61,34 @@ class RunAction : public G4UserRunAction
                   G4ThreeVector momentum,
                   G4double time);
     void SetCommands();
+    void ReadInput();
+    
+    // get/set methods
+    G4double GetEntry(G4String variable, G4int id) const
+    { if      (variable=="w")  return fW[id]; 
+      else if (variable=="x")  return fX[id];
+      else if (variable=="y")  return fY[id];
+      else if (variable=="z")  return fZ[id];
+      else if (variable=="px") return fPx[id];
+      else if (variable=="py") return fPy[id];
+      else if (variable=="pz") return fPz[id];
+      else if (variable=="t")  return fT[id];
+      else G4cerr << "Unknown variable name in RunAction::GetEntry."<< G4endl; throw;};
+    G4int GetLength() const {return fW.size();};
+    G4GenericMessenger* GetInMessenger() {return fInMessenger;};
+    G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
-    G4String fFileName; /**< \brief Output file name.*/
+    G4String fOutFileName; /**< \brief Output file name.*/
+    G4String fInFileName; /**< \brief Input file name.*/
     const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
     const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
     const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
-    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
+    G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
+    G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
+    
+    std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

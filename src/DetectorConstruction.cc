@@ -46,14 +46,14 @@
 */
 DetectorConstruction::DetectorConstruction()
 : G4VUserDetectorConstruction(),
-  fWorldLV(0),
-  fTargetSizeYZ(1*mm),
-  fTargetSizeX(0),
   fNumberOfLayers(0),
   fCheckOverlaps(true),
+  fTargetSizeX(0),
+  fTargetSizeYZ(1*mm),
+  fWorldLV(0),
   fMessenger(0)
 {
-  fMessenger = new G4GenericMessenger(this,"/target/","Manage target layers");
+  // set UI commands
   SetCommands();
 }
 
@@ -184,10 +184,18 @@ The AddTargetLayer function can be called in UI in the following way :
 */
 void DetectorConstruction::SetCommands()
 {
+  // get UI messengers
+  fMessenger = new G4GenericMessenger(this,"/target/","Manage target layers");
+
+  // define commands
   G4GenericMessenger::Command& addLayerCmd
     = fMessenger->DeclareMethod("addLayer",
                                 &DetectorConstruction::AddTargetLayer,
                                 "Add a new layer to the target");
+                                
+  // set commands properties
+  addLayerCmd.SetStates(G4State_Idle);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

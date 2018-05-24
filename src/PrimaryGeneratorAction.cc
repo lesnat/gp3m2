@@ -29,13 +29,20 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 #include "PrimaryGeneratorAction.hh"
+#include "RunAction.hh"
 
-#include "G4ParticleGun.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4PrimaryVertex.hh"
+
+#include "G4Event.hh"
 
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
 
+#include "Randomize.hh"
 #include "G4SystemOfUnits.hh"
+
+#include "G4GenericMessenger.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -43,63 +50,98 @@
 \brief Instanciate G4ParticleGun and define default primary particles properties
 
 */
-PrimaryGeneratorAction::PrimaryGeneratorAction()
+PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* masterRunAction)
 : G4VUserPrimaryGeneratorAction(),
-  fParticleGun(0)
+  fParticleName("geantino"),
+  fParticleTable(0),
+  fMasterRunAction(masterRunAction)
 {
-  // instanciate G4ParticleGun class
-  G4int n_particle = 1;
-  fParticleGun  = new G4ParticleGun(n_particle);
-
-  // define primary particle type
-  G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-  G4ParticleDefinition* particle
-    = particleTable->FindParticle("e-");
-  fParticleGun->SetParticleDefinition(particle);
+  // get particle table instance
+  fParticleTable = G4ParticleTable::GetParticleTable();
+  
+  // define UI commands
+  SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Delete G4ParticleGun instance
+\brief Do nothing.
 
 */
 PrimaryGeneratorAction::~PrimaryGeneratorAction()
+{}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief Generate primary particles.
+
+A random configuration is taken from the input file,
+and the primary particle properties are defined with this configuration.
+
+This virtual function is called at the begining of each event.
+*/
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
-  delete fParticleGun;
+  // get particle definition
+  G4ParticleDefinition* particleDefinition = fParticleTable->FindParticle(fParticleName);
+
+  // generate a random int corresponding to a line in the input file
+  G4int id = std::floor(G4UniformRand() * fMasterRunAction->GetLength());
+
+  // get statistical weight
+  G4double w0 = fMasterRunAction->GetEntry("w",id);
+
+  // get position
+  G4double x0 = fMasterRunAction->GetEntry("x",id);
+  G4double y0 = fMasterRunAction->GetEntry("y",id);
+  G4double z0 = fMasterRunAction->GetEntry("z",id);
+
+  // get momentum
+  G4double px0 = fMasterRunAction->GetEntry("px",id);
+  G4double py0 = fMasterRunAction->GetEntry("py",id);
+  G4double pz0 = fMasterRunAction->GetEntry("pz",id);
+
+  // get initial time
+  G4double t0 = fMasterRunAction->GetEntry("t",id);
+
+  // create & set particle properties
+  G4PrimaryParticle* particle = new G4PrimaryParticle(particleDefinition);
+  particle->SetWeight(w0);
+  particle->SetMomentum(px0*MeV,py0*MeV,pz0*MeV);
+
+  // create & set vertex properties
+  G4PrimaryVertex* vertex = new G4PrimaryVertex(G4ThreeVector(x0*um,y0*um,z0*um),t0*1e-3*ps);
+  vertex->SetPrimary(particle);
+
+  // generate the event
+  anEvent->AddPrimaryVertex(vertex);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Generate primary particles
+\brief Define UI commands.
 
-This virtual function is called at the begining of each event
+The primary particle type can be changed by using 
+/input/setParticle particleName
+
 */
-void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
+void PrimaryGeneratorAction::SetCommands()
 {
-  // statistical weight
-  G4double w0 = 1.0;
-
-  // position
-  G4double x0 = 0.0*m;
-  G4double y0 = 0.0*m;
-  G4double z0 = 0.0*m;
-
-  // momentum
-  G4double px0 = 1.0*MeV;
-  G4double py0 = 0.0*MeV;
-  G4double pz0 = 0.0*MeV;
-
-  // initial time
-  G4double t0 = 0.0*s;
-
-  //fParticleGun->SetParticleWeight(w0);
-  fParticleGun->SetParticlePosition(G4ThreeVector(x0,y0,z0));
-  fParticleGun->SetParticleMomentum(G4ThreeVector(px0,py0,pz0));
-  fParticleGun->SetParticleTime(t0);
-
-  fParticleGun->GeneratePrimaryVertex(anEvent);
+  // get UI messenger
+  G4GenericMessenger* messenger = fMasterRunAction->GetInMessenger();
+  
+  // set commands
+  G4GenericMessenger::Command& setParticleNameCmd
+  = messenger->DeclareProperty("setParticle",
+                              fParticleName,
+                              "Change particle type");
+                              
+  // set commands properties
+  setParticleNameCmd.SetStates(G4State_Idle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

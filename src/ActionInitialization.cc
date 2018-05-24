@@ -41,7 +41,8 @@
 
 */
 ActionInitialization::ActionInitialization()
- : G4VUserActionInitialization()
+: G4VUserActionInitialization(),
+  fMasterRunAction(new RunAction)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -56,25 +57,25 @@ ActionInitialization::~ActionInitialization()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Instanciate objects for the master thread
+\brief Instanciate objects for the master thread.
 
 */
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(new RunAction);
+  SetUserAction(fMasterRunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Instanciate objects for the worker threads
+\brief Instanciate objects for the worker threads.
 
 */
 void ActionInitialization::Build() const
 {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction);
+  SetUserAction(new PrimaryGeneratorAction(fMasterRunAction));
   SetUserAction(new SteppingAction(runAction));
 }
 

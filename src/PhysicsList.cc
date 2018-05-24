@@ -97,7 +97,7 @@ void PhysicsList::ConstructProcess()
 
 /**
 \brief Call base class method to set cuts which default value can be
-       modified via /run/setCut/* commands
+       modified via /run/setCut/_ commands
 
 ?
 */

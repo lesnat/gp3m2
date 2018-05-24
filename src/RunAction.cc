@@ -44,30 +44,32 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Create analysis manager and Ntuples
+\brief Create analysis manager, Ntuples and set UI commands.
 
 */
 RunAction::RunAction()
 : G4UserRunAction(),
-  fFileName("results"),
+  fOutFileName("results"),
+  fInFileName(""),
   fGamma(0),
   fElectron(0),
   fPositron(0),
-  fMessenger(0)
+  fOutMessenger(0),
+  fInMessenger(0)
 {
-  // Get particles definitions
+  // get particles definition
   fGamma    = G4Gamma::Gamma();
   fElectron = G4Electron::Electron();
   fPositron = G4Positron::Positron();
 
-  // Create analysis manager
+  // create analysis manager
   fAnalysisManager = G4AnalysisManager::Instance();
   fAnalysisManager->SetVerboseLevel(1);
   G4cout << "Using " << fAnalysisManager->GetType()
          << " analysis manager" << G4endl;
 
 
-  // Creating Ntuples TODO: In constructor or Initialize ? for several runs
+  // create Ntuples
   fAnalysisManager->SetFirstNtupleId(0);
   fAnalysisManager->SetFirstNtupleColumnId(0);
   // fAnalysisManager->SetNtupleMerging(true);
@@ -90,15 +92,14 @@ RunAction::RunAction()
     fAnalysisManager->FinishNtuple(i);
   }
 
-  // Set UI commands
-  fMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  // set UI commands
   SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Delete analysis manager
+\brief Delete analysis manager.
 
 */
 RunAction::~RunAction()
@@ -109,14 +110,17 @@ RunAction::~RunAction()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Open output file
+\brief Read input file & open output file.
 
 This user code is executed at the beginning of each run
 */
 void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
-  // Open an output file
-  fAnalysisManager->OpenFile(fFileName);
+  // read input file
+  ReadInput();
+  
+  // open output file
+  fAnalysisManager->OpenFile(fOutFileName);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -170,16 +174,61 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Set commands to be interpreted with the UI.
+\brief 
 
-The output file name can be changed in UI in the following way :
 
+*/
+void RunAction::ReadInput()
+{
+  // TODO: Clear fW,fX,... before import
+  std::ifstream line;
+  line.open(fInFileName);
+
+  G4double w,x,y,z,px,py,pz,t;
+  
+  while (!line.eof()) // TODO: if file[0]!="#"
+  {
+    line >> w >> x >> y >> z >> px >> py >> pz >> t;
+    fW.push_back(w)    ;
+    fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
+    fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
+    fT.push_back(t)    ;
+  }
+  
+  line.close();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+/**
+\brief Define UI commands.
+
+The input file name can be changed by using 
+/input/setFileName fileName
+
+The output file name can be changed by using 
 /output/setFileName fileName
+
 */
 void RunAction::SetCommands()
 {
-  G4GenericMessenger::Command& setFileNameCmd
-    = fMessenger->DeclareProperty("setFileName",
-                                fFileName,
-                                "Change output file names");
+  // get UI messengers
+  fOutMessenger = new G4GenericMessenger(this,"/output/","Manage simulation output");
+  fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
+
+  // define commands
+  G4GenericMessenger::Command& setOutFileNameCmd
+    = fOutMessenger->DeclareProperty("setFileName",
+                                fOutFileName,
+                                "Change output file name");
+                                
+  G4GenericMessenger::Command& setInFileNameCmd
+    = fInMessenger->DeclareProperty("setFileName",
+                                fInFileName,
+                                "Change input file name");
+                                
+  // set commands properties
+  setInFileNameCmd.SetStates(G4State_Idle);
+  setOutFileNameCmd.SetStates(G4State_Idle);
 }
