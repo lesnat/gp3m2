@@ -49,7 +49,7 @@ DetectorConstruction::DetectorConstruction()
   fNumberOfLayers(0),
   fCheckOverlaps(true),
   fTargetSizeX(0),
-  fTargetSizeYZ(1*mm),
+  fTargetSizeYZ(1*cm),
   fWorldLV(0),
   fMessenger(0)
 {
@@ -149,16 +149,8 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
 
   // New layer position
   G4ThreeVector position;
-  if (fTargetSizeX==0.)
-  {
-    position = G4ThreeVector(width/2,0,0);
-    fTargetSizeX += width/2;
-  }
-  else
-  {
-    position = G4ThreeVector(fTargetSizeX,0,0);
-  }
-
+  position = G4ThreeVector(fTargetSizeX + width/2,0,0);
+  
   // Create Layer physical volume
   new G4PVPlacement(0,                     // no rotation
                     position,              // at (0,0,0)
