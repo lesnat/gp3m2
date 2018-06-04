@@ -55,7 +55,8 @@ RunAction::RunAction()
   fElectron(0),
   fPositron(0),
   fOutMessenger(0),
-  fInMessenger(0)
+  fInMessenger(0),
+  fLowEnergyLimit(0)
 {
   // get particles definition
   fGamma    = G4Gamma::Gamma();
@@ -118,7 +119,7 @@ void RunAction::BeginOfRunAction(const G4Run* /*run*/)
 {
   // read input file
   ReadInput();
-  
+
   // open output file
   fAnalysisManager->OpenFile(fOutFileName);
 }
@@ -174,7 +175,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief 
+\brief
 
 
 */
@@ -185,7 +186,7 @@ void RunAction::ReadInput()
   line.open(fInFileName);
 
   G4double w,x,y,z,px,py,pz,t;
-  
+
   while (!line.eof()) // TODO: if file[0]!="#"
   {
     line >> w >> x >> y >> z >> px >> py >> pz >> t;
@@ -194,7 +195,7 @@ void RunAction::ReadInput()
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;
   }
-  
+
   line.close();
 }
 
@@ -204,10 +205,10 @@ void RunAction::ReadInput()
 /**
 \brief Define UI commands.
 
-The input file name can be changed by using 
+The input file name can be changed by using
 /input/setFileName fileName
 
-The output file name can be changed by using 
+The output file name can be changed by using
 /output/setFileName fileName
 
 */
@@ -222,13 +223,24 @@ void RunAction::SetCommands()
     = fOutMessenger->DeclareProperty("setFileName",
                                 fOutFileName,
                                 "Change output file name");
-                                
+
+  G4GenericMessenger::Command& setLowEnergyLimitCmd
+    = fOutMessenger->DeclarePropertyWithUnit("setLowEnergyLimit",
+                                "MeV",
+                                fLowEnergyLimit,
+                                "Change low energy limit");
+
   G4GenericMessenger::Command& setInFileNameCmd
     = fInMessenger->DeclareProperty("setFileName",
                                 fInFileName,
                                 "Change input file name");
-                                
+
   // set commands properties
   setInFileNameCmd.SetStates(G4State_Idle);
   setOutFileNameCmd.SetStates(G4State_Idle);
+  setLowEnergyLimitCmd.SetStates(G4State_Idle);
+  setLowEnergyLimitCmd.SetParameterName("lowE", true);
+  setLowEnergyLimitCmd.SetRange("lowE>=0.");
+  setLowEnergyLimitCmd.SetDefaultValue("0.01");
+  // setLowEnergyLimitCmd.SetUnitCategory("Energy");
 }
