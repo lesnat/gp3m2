@@ -51,7 +51,7 @@ class RunAction : public G4UserRunAction
     ~RunAction();
 
     // base class methods
-    virtual void BeginOfRunAction(const G4Run*);
+    virtual void BeginOfRunAction(const G4Run* aRun);
     virtual void   EndOfRunAction(const G4Run*);
 
     // user methods
@@ -89,6 +89,7 @@ class RunAction : public G4UserRunAction
     G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
     G4double fLowEnergyLimit;
+    G4double fNormW;
 
     std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };

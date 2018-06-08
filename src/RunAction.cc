@@ -40,7 +40,7 @@
 #include "G4Positron.hh"
 
 #include "G4GenericMessenger.hh"
-
+#include "G4Run.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -56,7 +56,8 @@ RunAction::RunAction()
   fPositron(0),
   fOutMessenger(0),
   fInMessenger(0),
-  fLowEnergyLimit(0)
+  fLowEnergyLimit(0),
+  fNormW(0)
 {
   // get particles definition
   fGamma    = G4Gamma::Gamma();
@@ -115,10 +116,14 @@ RunAction::~RunAction()
 
 This user code is executed at the beginning of each run
 */
-void RunAction::BeginOfRunAction(const G4Run* /*run*/)
+void RunAction::BeginOfRunAction(const G4Run* aRun)
 {
   // read input file
   ReadInput();
+
+  G4int NbOfEntries = GetLength();
+  G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
+  fNormW = NbOfEvents/NbOfEntries;
 
   // open output file
   fAnalysisManager->OpenFile(fOutFileName);
@@ -159,7 +164,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
   if (NtupleID!=-1)
   {
-    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight); // weight by event
+    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight/fNormW); // weight by event
     fAnalysisManager->FillNtupleDColumn(NtupleID,1,position[0]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,2,position[1]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,3,position[2]/um);

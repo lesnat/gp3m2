@@ -61,9 +61,6 @@ int main(int argc,char** argv)
   // set user action classes
   runManager->SetUserInitialization(new ActionInitialization);
 
-  // initialize G4 kernel
-  runManager->Initialize();
-
   // get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
