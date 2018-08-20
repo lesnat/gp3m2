@@ -23,62 +23,36 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file ActionInitialization.cc
-/// \brief Implementation of the ActionInitialization class
+/// \file TrackingAction.hh
+/// \brief Definition of the TrackingAction class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-#include "TrackingAction.hh"
-#include "SteppingAction.hh"
+#ifndef TrackingAction_h
+#define TrackingAction_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4UserTrackingAction.hh"
 
-/**
-\brief
-
-*/
-ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(),
-  fMasterRunAction(new RunAction)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+class G4ParticleDefinition;
 
 /**
-\brief
+\brief 
 
 */
-ActionInitialization::~ActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Instanciate objects for the master thread.
-
-*/
-void ActionInitialization::BuildForMaster() const
+class TrackingAction : public G4UserTrackingAction
 {
-  SetUserAction(fMasterRunAction);
-}
+  public:
+    TrackingAction();
+    ~TrackingAction();
+    
+    virtual void PreUserTrackingAction(const G4Track* aTrack);
+    
+  private:
+    G4int fBiasingFactorGamma;
+    G4int fBiasingFactorPositron;
+    G4ParticleDefinition* fGamma;
+    G4ParticleDefinition* fPositron;
+};
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Instanciate objects for the worker threads.
-
-*/
-void ActionInitialization::Build() const
-{
-  RunAction* runAction = new RunAction;
-  SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(fMasterRunAction));
-  SetUserAction(new TrackingAction());
-  SetUserAction(new SteppingAction(runAction));
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#endif
