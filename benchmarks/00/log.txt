@@ -1,4 +1,4 @@
-mardi 28 août 2018, 13:03:45 (UTC+0200)
+mardi 28 août 2018, 14:51:06 (UTC+0200)
 
 *************************************************************
  Geant4 version Name: geant4-10-03-patch-03 [MT]   (20-October-2017)
@@ -388,8 +388,8 @@ G4VDecayChannel::FillDaughters  [ pi+ ]1:nu_mu is not defined !!
  The BR of this decay mode is set to zero 
 G4VDecayChannel::FillDaughters  [ pi- ]1:anti_nu_mu is not defined !!
  The BR of this decay mode is set to zero 
-G4WT1 > Using Csv analysis manager
 G4WT0 > Using Csv analysis manager
+G4WT1 > Using Csv analysis manager
 /run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
@@ -398,7 +398,6 @@ Checking overlaps for volume Layer ... OK!
 /input/setFileName input.dat
 /input/setParticle e-
 /output/setFileName test
-/output/setLowEnergyLimit 10 keV
 /run/beamOn 1000
 
 ========= Table of registered couples ==============================
@@ -419,44 +418,44 @@ Index : 0     used in the geometry : Yes
 G4WT1 > ### Run 0 starts on worker thread 1.
 G4WT0 > ### Run 0 starts on worker thread 0.
 G4WT1 > ... create Csv file : test_nt_electron_t1.csv - done
-G4WT1 > ... create Csv file : test_nt_gamma_t1.csv - done
-G4WT1 > ... create Csv file : test_nt_positron_t1.csv - done
 G4WT0 > ... create Csv file : test_nt_electron_t0.csv - done
+G4WT1 > ... create Csv file : test_nt_gamma_t1.csv - done
 G4WT0 > ... create Csv file : test_nt_gamma_t0.csv - done
+G4WT1 > ... create Csv file : test_nt_positron_t1.csv - done
 G4WT0 > ... create Csv file : test_nt_positron_t0.csv - done
+G4WT0 > Thread-local run terminated.
+G4WT0 > Run Summary
+G4WT0 >   Number of events processed : 594
 G4WT1 > Thread-local run terminated.
+G4WT0 >   User=0.07s Real=0.04s Sys=0s
+G4WT0 > ... write Csv files :  - done
 G4WT1 > Run Summary
-G4WT1 >   Number of events processed : 560
-G4WT1 >   User=0.06s Real=0.03s Sys=0s
+G4WT0 > ... close Csv file : test_nt_electron_t0.csv - done
+G4WT1 >   Number of events processed : 406
+G4WT0 > ... close Csv file : test_nt_gamma_t0.csv - done
+G4WT1 >   User=0.08s Real=0.04s Sys=0s
+G4WT0 > ... close Csv file : test_nt_positron_t0.csv - done
 G4WT1 > ... write Csv files :  - done
 G4WT1 > ... close Csv file : test_nt_electron_t1.csv - done
 G4WT1 > ... close Csv file : test_nt_gamma_t1.csv - done
-G4WT0 > Thread-local run terminated.
-G4WT0 > Run Summary
 G4WT1 > ... close Csv file : test_nt_positron_t1.csv - done
-G4WT0 >   Number of events processed : 440
-G4WT0 >   User=0.06s Real=0.03s Sys=0s
-G4WT0 > ... write Csv files :  - done
-G4WT0 > ... close Csv file : test_nt_electron_t0.csv - done
-G4WT0 > ... close Csv file : test_nt_gamma_t0.csv - done
-G4WT0 > ... close Csv file : test_nt_positron_t0.csv - done
  Run terminated.
 Run Summary
   Number of events processed : 1000
-  User=0.07s Real=0.04s Sys=0s
+  User=0.08s Real=0.05s Sys=0s
 ... write Csv files :  - done
 ... close Csv file : test_nt_electron.csv - done
 ... close Csv file : test_nt_gamma.csv - done
 ... close Csv file : test_nt_positron.csv - done
+G4WT1 > ================== Deleting memory pools ===================
 G4WT0 > ================== Deleting memory pools ===================
 G4WT0 > Number of memory pools allocated: 9; of which, static: 0
-G4WT0 > Dynamic pools deleted: 9 / Total memory freed: 0.014 MB
+G4WT0 > Dynamic pools deleted: 9 / Total memory freed: 0.015 MB
 G4WT0 > ============================================================
 G4WT0 > Thread-local UImanager is to be deleted.
 G4WT0 > There should not be any thread-local G4cout/G4cerr hereafter.
-G4WT1 > ================== Deleting memory pools ===================
 G4WT1 > Number of memory pools allocated: 9; of which, static: 0
-G4WT1 > Dynamic pools deleted: 9 / Total memory freed: 0.014 MB
+G4WT1 > Dynamic pools deleted: 9 / Total memory freed: 0.015 MB
 G4WT1 > ============================================================
 G4WT1 > Thread-local UImanager is to be deleted.
 G4WT1 > There should not be any thread-local G4cout/G4cerr hereafter.
@@ -472,15 +471,24 @@ Launching analysis script ...
 
 Error(s) occured :
 
-    len(w) value 0 does not fit with reference 1000, with atol=0.0 and rtol=0.0.
-    trapz(w) value 0.0 does not fit with reference 24.3920801713, with atol=0.0 and rtol=0.01.
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 0).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 1).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 2).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 3).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 4).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 5).
-    nw/nW value 0.0 not in the entries, with atol=0.5 and rtol=0.01 (index = 6).
+    Number of events
+	value 406 does not fit with reference 1000, with atol=0.0 and rtol=0.0.
+    Total number of particles
+	value 2.4397605 does not fit with reference 4.0, with atol=0.0 and rtol=0.01.
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 0).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 1).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 2).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 3).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 4).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 5).
+    Weight normalization : sim in ref
+	value 6.0241 not in the entries, with atol=0.0 and rtol=0.01 (index = 6).
     ...
     ...
     ...
