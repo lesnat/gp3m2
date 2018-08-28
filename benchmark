@@ -12,6 +12,6 @@ PY=python
 cd benchmarks/${BENCH}/
 rm *.xml *.root *.csv
 date > ${LOG}
-${SRC} -m ${MACRO} | tee -a ${LOG}
+${SRC} -m ${MACRO} >> ${LOG}
 ${PY} analysis.py | tee -a ${LOG}
 cd ../../
