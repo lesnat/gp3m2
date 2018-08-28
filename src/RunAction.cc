@@ -119,13 +119,13 @@ This user code is executed at the beginning of each run
 void RunAction::BeginOfRunAction(const G4Run* aRun)
 {
   // read input file
-  ReadInput();
+  if (!isMaster){
+    ReadInput();
 
-  G4int NbOfEntries = GetLength();
-  G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
-  // G4cout << NbOfEntries << "  " << NbOfEvents << G4endl;
-  // G4cerr << "STOP";
-  fNormW = NbOfEvents/NbOfEntries;
+    G4int NbOfEntries = GetLength();
+    G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
+    fNormW = NbOfEvents/NbOfEntries;
+  }
 
   // open output file
   fAnalysisManager->OpenFile(fOutFileName);
@@ -205,6 +205,7 @@ void RunAction::ReadInput()
     fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;
+    // G4cout << "\nw "<<w<<"\nx "<<x<<"\npx "<<px<<"\nt "<<t<<G4endl;
   }
   input.close();
 }
