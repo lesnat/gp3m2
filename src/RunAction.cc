@@ -123,6 +123,8 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
   G4int NbOfEntries = GetLength();
   G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
+  // G4cout << NbOfEntries << "  " << NbOfEvents << G4endl;
+  // G4cerr << "STOP";
   fNormW = NbOfEvents/NbOfEntries;
 
   // open output file
@@ -187,21 +189,24 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 void RunAction::ReadInput()
 {
   // TODO: Clear fW,fX,... before import
-  std::ifstream line;
-  line.open(fInFileName);
+  std::ifstream input;
+  std::string str;
+  input.open(fInFileName);
 
   G4double w,x,y,z,px,py,pz,t;
 
-  while (!line.eof()) // TODO: if file[0]!="#"
+  while (!input.eof())
   {
-    line >> w >> x >> y >> z >> px >> py >> pz >> t;
+    std::getline(input,str);
+    if(str[0]=='#' or str=="") continue;
+    std::stringstream ss(str);
+    ss >> w >> x >> y >> z >> px >> py >> pz >> t;
     fW.push_back(w)    ;
     fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;
   }
-
-  line.close();
+  input.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

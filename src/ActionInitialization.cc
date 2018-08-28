@@ -76,7 +76,7 @@ void ActionInitialization::Build() const
 {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(fMasterRunAction));
+  SetUserAction(new PrimaryGeneratorAction(runAction));
   // SetUserAction(new TrackingAction());
   SetUserAction(new SteppingAction(runAction));
 }
