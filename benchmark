@@ -1,0 +1,17 @@
+#! /bin/sh
+
+SRC=../../build/gp3m2
+MACRO=run.mac
+
+LOG=log.txt
+
+BENCH=00 # -> argv
+
+PY=python
+
+cd benchmarks/${BENCH}/
+rm *.xml *.root *.csv
+date > ${LOG}
+${SRC} -m ${MACRO} | tee -a ${LOG}
+${PY} analysis.py | tee -a ${LOG}
+cd ../../
