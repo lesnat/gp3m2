@@ -124,7 +124,8 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 
     G4int NbOfEntries = GetLength();
     G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
-    fNormW = NbOfEvents/NbOfEntries;
+    fNormW = (G4double)NbOfEvents/(G4double)NbOfEntries;
+    // G4cout << "fNormW : "<<std::setprecision(15)<<fNormW<<G4endl;
   }
 
   // open output file
@@ -176,6 +177,15 @@ void RunAction::FillData(const G4ParticleDefinition* part,
     fAnalysisManager->FillNtupleDColumn(NtupleID,7,time/(1e-3*ps));
 
     fAnalysisManager->AddNtupleRow(NtupleID);
+
+    // G4cout<<std::scientific<<std::setprecision(15)<<weight<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[0]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[1]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[2]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[0]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[1]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[2]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<time/(1e-3*ps)<<G4endl;
   }
 }
 
@@ -205,7 +215,12 @@ void RunAction::ReadInput()
     fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;
-    // G4cout << "\nw "<<w<<"\nx "<<x<<"\npx "<<px<<"\nt "<<t<<G4endl;
+
+    // std::cout<<str<<std::endl;
+    // std::cout << "\nw "<<std::scientific<<std::setprecision(15)<<w
+    //           <<"\nx "<<std::scientific<<std::setprecision(15)<<x
+    //           <<"\npx "<<std::scientific<<std::setprecision(15)<<px
+    //           <<"\nt "<<std::scientific<<std::setprecision(15)<<t<<std::endl;
   }
   input.close();
 }
