@@ -50,10 +50,14 @@ I made some benchmarks in order to validate the method.
 To launch the benchmark `N` from the root dir, you can type
 
 ```bash
-./benchmark N
+./benchmark [N] [v]
 ```
 
-More informations can be found at `benchmarks/README.md`
+To see the Geant4 output in the terminal, use the keyword `v` as a second argument.
+
+By default the benchmark 0 is launched with no verbose mode.
+
+More informations can be found at `benchmarks/README.md`.
 
 ## Documentation
 

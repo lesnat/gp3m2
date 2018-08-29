@@ -6,7 +6,7 @@ PY=python
 
 LOG=log.txt
 
-if [ $1 > 0 ]
+if [ $# -gt 0 ]
 then
   BENCH=$1
 else
@@ -16,7 +16,13 @@ fi
 cd benchmarks/${BENCH}/
 rm *.xml *.root *.csv
 date > ${LOG}
-#${SRC} -m ${MACRO} | tee -a ${LOG}
-${SRC} -m ${MACRO} >> ${LOG}
+
+if [ "$2" != "v" ]
+then
+  ${SRC} -m ${MACRO} >> ${LOG}
+else
+  ${SRC} -m ${MACRO} | tee -a ${LOG}
+fi
+
 ${PY} analysis.py | tee -a ${LOG}
 cd ../../
