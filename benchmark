@@ -2,16 +2,21 @@
 
 SRC=../../build/gp3m2
 MACRO=run.mac
+PY=python
 
 LOG=log.txt
 
-BENCH=00 # -> argv
-
-PY=python
+if [ $1 > 0 ]
+then
+  BENCH=$1
+else
+  BENCH=0
+fi
 
 cd benchmarks/${BENCH}/
 rm *.xml *.root *.csv
 date > ${LOG}
+#${SRC} -m ${MACRO} | tee -a ${LOG}
 ${SRC} -m ${MACRO} >> ${LOG}
 ${PY} analysis.py | tee -a ${LOG}
 cd ../../

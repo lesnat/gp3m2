@@ -20,5 +20,6 @@
 /input/setParticle e-
 
 /output/setFileName test
+/output/setLowEnergyLimit 0 keV
 
 /run/beamOn 1000
