@@ -61,7 +61,8 @@ class Test(object):
       print("Error(s) occured :\n")
       print(self.text)
     else:
-      print("No error occured.")
+      print("No error occured (atol={a}, rtol={r})."
+            .format(a=self.atol,r=self.rtol))
     print(self.SEPARATOR)
 
   def add_error(self,text):

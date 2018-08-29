@@ -54,6 +54,7 @@ Dz = Dx*sim.pz/sim.px
 test.atol=1e-2 # precision of 1e-2 um/fs
 # Test if it fit with input value
 test.vector('Origin of y',sim.y-Dy,ref.y,both=both)
+test.vector('Origin of z',sim.z-Dz,ref.z,both=both)
 
 # Test if propagation time is correct
 Dt = sim.d()/sim.v()
