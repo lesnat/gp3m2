@@ -129,7 +129,7 @@ class Test(object):
     if not _np.allclose(tval,rval,rtol=self.rtol,atol=self.atol):
       n += 1
       self.add_error(
-      """\t{label} :\n\t  value {tval: .4E} does not fit with reference {rval: .4E}, with atol={atol:.4E} and rtol={rtol:.4E}.\n"""
+      """\t{label} :\n\t  value {tval: .4E} is not equal to reference {rval: .4E}, with atol={atol:.4E} and rtol={rtol:.4E}.\n"""
       .format(label=label,tval=tval,rval=rval,atol=self.atol,rtol=self.rtol)
       )
 
@@ -165,7 +165,7 @@ class Test(object):
           break
         else:
           self.add_error(
-          """\t{label} :\n\t  value {val: .4E} not in the entries, with atol={atol:.4E} and rtol={rtol:.4E} (index = {i}).\n"""
+          """\t{label} :\n\t  value {val: .4E} is not present in the reference, with atol={atol:.2E} and rtol={rtol:.2E} (index = {i}).\n"""
           .format(label=clabel,val=val,atol=self.atol,rtol=self.rtol,i=i)
           )
     self.print_result(clabel,n)
@@ -234,8 +234,8 @@ class Data(object):
   def r(self):
     return _np.sqrt(self.y**2 + self.z**2)
 
-  def d(self):
-    return _np.sqrt(self.x**2 + self.y**2 + self.z**2)
+  def d(self,x0=0):
+    return _np.sqrt((self.x-x0)**2 + self.y**2 + self.z**2)
 
   def v(self):
     return self.beta() * 2.99792458e8 * 1e6 / 1e15

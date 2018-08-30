@@ -51,7 +51,7 @@ test.vector('Diagnostic position',sim.x,[Dx],both=both)
 # Calculate particle origin in y,z from momentum
 Dy = Dx*sim.py/sim.px
 Dz = Dx*sim.pz/sim.px
-test.atol=1e-2 # precision of 1e-2 um/fs
+test.atol=1e-2 # precision of 1e-2 um/fs, atol because y,z origin are 0
 # Test if it fit with input value
 test.vector('Origin of y',sim.y-Dy,ref.y,both=both)
 test.vector('Origin of z',sim.z-Dz,ref.z,both=both)
