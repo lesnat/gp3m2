@@ -25,4 +25,6 @@ Same as 0, but with a longer and more realistic input file.
 
 ## 2
 
-- /output/setLowEnergyLimit 10 keV
+- /run/numberOfThreads
+- /run/printProgress
+- Convergence of total particle number with high statistics
