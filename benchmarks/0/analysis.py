@@ -22,7 +22,7 @@ both=True
 # sim.py +=1.0
 
 # Instanciate an Test object with a maximum display of 3 errors per test
-test = benchmark.Test(nerrors=3,rtol=1e-12)
+test = benchmark.Test(nerrors=3,rtol=1e-5)
 
 # Print initialization
 test.print_init(id="0")
@@ -30,7 +30,12 @@ test.print_init(id="0")
 # Test if number of output entries = number of primaries
 test.value('Number of events',len(sim.w),nevents)
 
+# Test total number of particles (low rtol because of the low statistics)
+test.rtol=1e-1
+test.value('Total number of particles',sum(sim.w),sum(ref.w))
+
 # Test weight normalization
+test.rtol=1e-5
 wnorm=float(len(ref.w))/nevents
 test.vector('Weight normalization',sim.w/wnorm,ref.w,both=both)
 
@@ -41,20 +46,21 @@ test.vector('pz',sim.pz,ref.pz,both=both)
 
 # Define diag x coordinate (um)
 Dx = 50.
+x0 = 1.5
 
 # Test if x is in diag axis
 test.vector('Diagnostic position',sim.x,[Dx],both=both)
 
 # Calculate particle origin in y,z from momentum
-Dy = Dx*sim.py/sim.px
-Dz = Dx*sim.pz/sim.px
-test.atol=1e-2 # precision of 1e-2 um/fs, atol because y,z origin are 0
+Dy = (Dx-x0)*sim.py/sim.px
+Dz = (Dx-x0)*sim.pz/sim.px
 # Test if it fit with input value
 test.vector('Origin of y',sim.y-Dy,ref.y,both=both)
 test.vector('Origin of z',sim.z-Dz,ref.z,both=both)
 
 # Test if propagation time is correct
-Dt = sim.d()/sim.v()
+test.rtol=1e-4
+Dt = sim.d(x0=x0,y0=sim.y-Dy,z0=sim.z-Dz)/sim.v()
 test.vector('Origin of t',sim.t-Dt,ref.t,both=both)
 
 # Print errors

@@ -4,7 +4,7 @@
 # or interactively: Idle> /control/execute run.mac
 #
 # Change the default number of workers (in multi-threading mode)
-#/run/numberOfThreads 4
+/run/numberOfThreads 4
 #
 # Initialize kernel
 /run/initialize
@@ -13,6 +13,7 @@
 /run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
+/run/printProgress 10000
 
 /target/addLayer G4_Galactic 50
 #
@@ -22,4 +23,4 @@
 /output/setFileName test
 /output/setLowEnergyLimit 0 keV
 
-/run/beamOn 1000
+/run/beamOn 100000
