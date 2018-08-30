@@ -234,8 +234,8 @@ class Data(object):
   def r(self):
     return _np.sqrt(self.y**2 + self.z**2)
 
-  def d(self,x0=0):
-    return _np.sqrt((self.x-x0)**2 + self.y**2 + self.z**2)
+  def d(self,x0=0,y0=0,z0=0):
+    return _np.sqrt((self.x-x0)**2 + (self.y-y0)**2 + (self.z-z0)**2)
 
   def v(self):
     return self.beta() * 2.99792458e8 * 1e6 / 1e15

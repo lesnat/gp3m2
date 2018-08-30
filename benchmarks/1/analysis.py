@@ -60,7 +60,8 @@ test.vector('Origin of y',sim.y-Dy,ref.y,both=both)
 test.vector('Origin of z',sim.z-Dz,ref.z,both=both)
 
 # Test if propagation time is correct
-Dt = sim.d(x0=x0)/sim.v()
+test.rtol=1e-4
+Dt = sim.d(x0=x0,y0=sim.y-Dy,z0=sim.z-Dz)/sim.v()
 test.vector('Origin of t',sim.t-Dt,ref.t,both=both)
 
 # Print errors
