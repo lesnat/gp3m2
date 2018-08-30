@@ -51,7 +51,7 @@ class RunAction : public G4UserRunAction
     ~RunAction();
 
     // base class methods
-    virtual void BeginOfRunAction(const G4Run*);
+    virtual void BeginOfRunAction(const G4Run* aRun);
     virtual void   EndOfRunAction(const G4Run*);
 
     // user methods
@@ -62,10 +62,10 @@ class RunAction : public G4UserRunAction
                   G4double time);
     void SetCommands();
     void ReadInput();
-    
+
     // get/set methods
     G4double GetEntry(G4String variable, G4int id) const
-    { if      (variable=="w")  return fW[id]; 
+    { if      (variable=="w")  return fW[id];
       else if (variable=="x")  return fX[id];
       else if (variable=="y")  return fY[id];
       else if (variable=="z")  return fZ[id];
@@ -77,6 +77,7 @@ class RunAction : public G4UserRunAction
     G4int GetLength() const {return fW.size();};
     G4GenericMessenger* GetInMessenger() {return fInMessenger;};
     G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
+    G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
@@ -87,7 +88,9 @@ class RunAction : public G4UserRunAction
     const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
     G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
-    
+    G4double fLowEnergyLimit;
+    G4double fNormW;
+
     std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };
 

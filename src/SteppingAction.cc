@@ -75,7 +75,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     aTrack->GetDynamicParticle()->GetDefinition();
 
   if (postStepPoint->GetStepStatus() == fGeomBoundary &&
-      postStepPoint->GetKineticEnergy() > 0.1*MeV)
+      postStepPoint->GetKineticEnergy() > fRunAction->GetLowEnergyLimit())
   {
     G4double      weight    = postStepPoint->GetWeight();
     G4ThreeVector position  = postStepPoint->GetPosition();

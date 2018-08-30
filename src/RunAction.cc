@@ -40,7 +40,7 @@
 #include "G4Positron.hh"
 
 #include "G4GenericMessenger.hh"
-
+#include "G4Run.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -55,7 +55,9 @@ RunAction::RunAction()
   fElectron(0),
   fPositron(0),
   fOutMessenger(0),
-  fInMessenger(0)
+  fInMessenger(0),
+  fLowEnergyLimit(0),
+  fNormW(0)
 {
   // get particles definition
   fGamma    = G4Gamma::Gamma();
@@ -114,11 +116,18 @@ RunAction::~RunAction()
 
 This user code is executed at the beginning of each run
 */
-void RunAction::BeginOfRunAction(const G4Run* /*run*/)
+void RunAction::BeginOfRunAction(const G4Run* aRun)
 {
   // read input file
-  ReadInput();
-  
+  if (!isMaster){
+    ReadInput();
+
+    G4int NbOfEntries = GetLength();
+    G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
+    fNormW = (G4double)NbOfEvents/(G4double)NbOfEntries;
+    // G4cout << "fNormW : "<<std::setprecision(15)<<fNormW<<G4endl;
+  }
+
   // open output file
   fAnalysisManager->OpenFile(fOutFileName);
 }
@@ -158,7 +167,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
   if (NtupleID!=-1)
   {
-    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight); // weight by event
+    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight/fNormW); // weight by event
     fAnalysisManager->FillNtupleDColumn(NtupleID,1,position[0]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,2,position[1]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,3,position[2]/um);
@@ -168,34 +177,52 @@ void RunAction::FillData(const G4ParticleDefinition* part,
     fAnalysisManager->FillNtupleDColumn(NtupleID,7,time/(1e-3*ps));
 
     fAnalysisManager->AddNtupleRow(NtupleID);
+
+    // G4cout<<std::scientific<<std::setprecision(15)<<weight<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[0]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[1]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<position[2]/um<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[0]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[1]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[2]/MeV<<G4endl;
+    // G4cout<<std::scientific<<std::setprecision(15)<<time/(1e-3*ps)<<G4endl;
   }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief 
+\brief
 
 
 */
 void RunAction::ReadInput()
 {
   // TODO: Clear fW,fX,... before import
-  std::ifstream line;
-  line.open(fInFileName);
+  std::ifstream input;
+  std::string str;
+  input.open(fInFileName);
 
   G4double w,x,y,z,px,py,pz,t;
-  
-  while (!line.eof()) // TODO: if file[0]!="#"
+
+  while (!input.eof())
   {
-    line >> w >> x >> y >> z >> px >> py >> pz >> t;
+    std::getline(input,str);
+    if(str[0]=='#' or str=="") continue;
+    std::stringstream ss(str);
+    ss >> w >> x >> y >> z >> px >> py >> pz >> t;
     fW.push_back(w)    ;
     fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;
+
+    // std::cout<<str<<std::endl;
+    // std::cout << "\nw "<<std::scientific<<std::setprecision(15)<<w
+    //           <<"\nx "<<std::scientific<<std::setprecision(15)<<x
+    //           <<"\npx "<<std::scientific<<std::setprecision(15)<<px
+    //           <<"\nt "<<std::scientific<<std::setprecision(15)<<t<<std::endl;
   }
-  
-  line.close();
+  input.close();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -204,10 +231,10 @@ void RunAction::ReadInput()
 /**
 \brief Define UI commands.
 
-The input file name can be changed by using 
+The input file name can be changed by using
 /input/setFileName fileName
 
-The output file name can be changed by using 
+The output file name can be changed by using
 /output/setFileName fileName
 
 */
@@ -222,13 +249,24 @@ void RunAction::SetCommands()
     = fOutMessenger->DeclareProperty("setFileName",
                                 fOutFileName,
                                 "Change output file name");
-                                
+
+  G4GenericMessenger::Command& setLowEnergyLimitCmd
+    = fOutMessenger->DeclarePropertyWithUnit("setLowEnergyLimit",
+                                "MeV",
+                                fLowEnergyLimit,
+                                "Change low energy limit");
+
   G4GenericMessenger::Command& setInFileNameCmd
     = fInMessenger->DeclareProperty("setFileName",
                                 fInFileName,
                                 "Change input file name");
-                                
+
   // set commands properties
   setInFileNameCmd.SetStates(G4State_Idle);
   setOutFileNameCmd.SetStates(G4State_Idle);
+  setLowEnergyLimitCmd.SetStates(G4State_Idle);
+  setLowEnergyLimitCmd.SetParameterName("lowE", true);
+  setLowEnergyLimitCmd.SetRange("lowE>=0.");
+  setLowEnergyLimitCmd.SetDefaultValue("0.01");
+  // setLowEnergyLimitCmd.SetUnitCategory("Energy");
 }
