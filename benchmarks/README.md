@@ -1,6 +1,6 @@
 # Benchmarking
 
-## 0
+## 0 - Input/Ouput correspondance in vacuum
 
 Check input and output reading and writing, and the correspondance between
 input and output for particle propagation in vacuum.
@@ -19,10 +19,10 @@ Tests :
 - diagnostic position
 - origin of y,z,t
 
-## 1
+## 1 - High statistics and multi-threading
 
-Check the convergence on total number of particles with high statistics,
-and command to change number of threads.
+Check the convergence on total number of particles (in vacuum),
+and check the command to select number of threads.
 
 Commands:
 - /run/numberOfThreads N

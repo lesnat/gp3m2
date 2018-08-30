@@ -18,7 +18,7 @@ nevents = 1e5
 test = benchmark.Test(nerrors=3,rtol=1e-2)
 
 # Print initialization
-test.print_init(id="2")
+test.print_init(id="1")
 
 # Test if number of output entries = number of primaries
 test.value('Number of events',len(sim.w),nevents)
