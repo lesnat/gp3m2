@@ -30,9 +30,6 @@ test.print_init(id="0")
 # Test if number of output entries = number of primaries
 test.value('Number of events',len(sim.w),nevents)
 
-# Test total number of particles
-test.value('Total number of particles',sum(sim.w),sum(ref.w))
-
 # Test weight normalization
 wnorm=float(len(ref.w))/nevents
 test.vector('Weight normalization',sim.w/wnorm,ref.w,both=both)

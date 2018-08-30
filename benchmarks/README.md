@@ -2,29 +2,45 @@
 
 ## 0
 
-Check if output data is in the input for a G4_Galactic target material.
-The x size is also changed for checking if this value is well exported.
+Check input and output reading and writing, and the correspondance between
+input and output for particle propagation in vacuum.
 
-Commands:
-- /target/addLayer G4_Galactic 50
-- /input/setFileName input.dat
-- /input/setParticle e-
-- /output/setFileName test
+Commands :
+- /target/addLayer material position(um)
+- /input/setFileName filename
+- /input/setParticle particle
+- /output/setFileName filename
 
-
-Verify :
-- length of vectors corresponds to number of entries
-- output px,py,pz are in input px,py,pz
-- all the input px,py,pz are present in the output (check the statistics)
-- x fit with diag coordinate
-- output y,z fit with input y,z (with transformation because of geometry)
+Tests :
+- number of events
+- weight normalization
+- momentum conservation in each direction
+- diagnostic position
+- origin of y,z,t
 
 ## 1
 
-Same as 0, but with a longer and more realistic input file.
+Same as 0, but with a longer input file.
+
+Commands :
+- same as 0
+
+Tests :
+- same as 0 for non-zero x,y,z,t origin
+- convergence on total number of particles (precision = 5 %)
 
 ## 2
 
-- /run/numberOfThreads
-- /run/printProgress
-- Convergence of total particle number with high statistics
+Check the convergence on total number of particles with high statistics,
+and command to change number of threads.
+
+Commands:
+- /run/numberOfThreads N
+- /run/printProgress N
+
+Tests:
+- convergence of total particle number with high statistics (precision = 1%)
+
+## 3
+
+Physics ...

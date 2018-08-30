@@ -23,7 +23,8 @@ test.print_init(id="2")
 # Test if number of output entries = number of primaries
 test.value('Number of events',len(sim.w),nevents)
 
-# Test total number of particles (1% error max for 1e5 particles (20 configurations))
+# Test total number of particles
+# (1% error max for 1e5 particles (20 configurations => 5000 e-/configuration))
 test.value('Total number of particles',sum(sim.w),sum(ref.w))
 
 # Print errors
