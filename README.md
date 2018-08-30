@@ -70,6 +70,7 @@ doxygen doxyfile
 
 or use doxywizard.
 
-## Known problems
+## Known problems/Remarks
 
-- Infinite statistical weight when the number of events is less than number of particles
+- Infinite statistical weight in diagnostics when the number of events is less than number of lines of the input file (number of configurations)
+- Precision of 6 digits in diagnostics (forced by the analysis manager ?)
