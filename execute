@@ -1,3 +1,0 @@
-rm -f test*.csv
-
-build/gp3m2 -m run.mac
