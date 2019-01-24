@@ -54,7 +54,7 @@ class PhysicsList: public G4VModularPhysicsList
     virtual void SetCuts();
 
   private:
-    G4VPhysicsConstructor*  fEmPhysicsList; /**< \brief Pointer to the used pre-packaged PhysicsList.*/
+    G4VPhysicsConstructor*  fPhysicsList; /**< \brief Pointer to the used pre-packaged PhysicsList.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
