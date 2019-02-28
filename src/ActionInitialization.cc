@@ -42,8 +42,7 @@
 
 */
 ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(),
-  fMasterRunAction(new RunAction)
+: G4VUserActionInitialization()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -63,7 +62,7 @@ ActionInitialization::~ActionInitialization()
 */
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(fMasterRunAction);
+  SetUserAction(new RunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

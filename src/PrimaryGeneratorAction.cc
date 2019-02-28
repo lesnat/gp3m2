@@ -54,11 +54,11 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* masterRunAction)
 : G4VUserPrimaryGeneratorAction(),
   fParticleName("geantino"),
   fParticleTable(0),
-  fMasterRunAction(masterRunAction)
+  fRunAction(masterRunAction)
 {
   // get particle table instance
   fParticleTable = G4ParticleTable::GetParticleTable();
-  
+
   // define UI commands
   SetCommands();
 }
@@ -88,23 +88,23 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleDefinition* particleDefinition = fParticleTable->FindParticle(fParticleName);
 
   // generate a random int corresponding to a line in the input file
-  G4int id = std::floor(G4UniformRand() * fMasterRunAction->GetLength());
+  G4int id = std::floor(G4UniformRand() * fRunAction->GetLength());
 
   // get statistical weight
-  G4double w0 = fMasterRunAction->GetEntry("w",id);
+  G4double w0 = fRunAction->GetEntry("w",id);
 
   // get position
-  G4double x0 = fMasterRunAction->GetEntry("x",id);
-  G4double y0 = fMasterRunAction->GetEntry("y",id);
-  G4double z0 = fMasterRunAction->GetEntry("z",id);
+  G4double x0 = fRunAction->GetEntry("x",id);
+  G4double y0 = fRunAction->GetEntry("y",id);
+  G4double z0 = fRunAction->GetEntry("z",id);
 
   // get momentum
-  G4double px0 = fMasterRunAction->GetEntry("px",id);
-  G4double py0 = fMasterRunAction->GetEntry("py",id);
-  G4double pz0 = fMasterRunAction->GetEntry("pz",id);
+  G4double px0 = fRunAction->GetEntry("px",id);
+  G4double py0 = fRunAction->GetEntry("py",id);
+  G4double pz0 = fRunAction->GetEntry("pz",id);
 
   // get initial time
-  G4double t0 = fMasterRunAction->GetEntry("t",id);
+  G4double t0 = fRunAction->GetEntry("t",id);
 
   // create & set particle properties
   G4PrimaryParticle* particle = new G4PrimaryParticle(particleDefinition);
@@ -124,24 +124,23 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 /**
 \brief Define UI commands.
 
-The primary particle type can be changed by using 
+The primary particle type can be changed by using
 /input/setParticle particleName
 
 */
 void PrimaryGeneratorAction::SetCommands()
 {
   // get UI messenger
-  G4GenericMessenger* messenger = fMasterRunAction->GetInMessenger();
-  
+  G4GenericMessenger* messenger = fRunAction->GetInMessenger();
+
   // set commands
   G4GenericMessenger::Command& setParticleNameCmd
   = messenger->DeclareProperty("setParticle",
                               fParticleName,
                               "Change particle type");
-                              
+
   // set commands properties
   setParticleNameCmd.SetStates(G4State_Idle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-

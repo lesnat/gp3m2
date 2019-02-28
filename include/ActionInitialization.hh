@@ -50,9 +50,6 @@ class ActionInitialization : public G4VUserActionInitialization
     // base class methods
     virtual void BuildForMaster() const;
     virtual void Build() const;
-
-  private:
-    RunAction* fMasterRunAction;
 };
 
 #endif
