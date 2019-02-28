@@ -23,62 +23,34 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file ActionInitialization.cc
-/// \brief Implementation of the ActionInitialization class
+/// \file BiasingOperation.hh
+/// \brief Definition of the BiasingOperation class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-// #include "TrackingAction.hh"
-#include "SteppingAction.hh"
+#ifndef BiasingOperation_h
+#define BiasingOperation_h 1
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+#include "G4VBiasingOperation.hh"
 
 /**
-\brief
+\brief This is an example description
 
+...
 */
-ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(),
-  fMasterRunAction(new RunAction)
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief
-
-*/
-ActionInitialization::~ActionInitialization()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Instanciate objects for the master thread.
-
-*/
-void ActionInitialization::BuildForMaster() const
+class BiasingOperation : public G4VBiasingOperation
 {
-  SetUserAction(fMasterRunAction);
-}
+  public:
+    BiasingOperation();
+    virtual ~BiasingOperation();
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    // base class methods
 
-/**
-\brief Instanciate objects for the worker threads.
+    // user methods
 
-*/
-void ActionInitialization::Build() const
-{
-  RunAction* runAction = new RunAction;
-  SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(runAction));
-  // SetUserAction(new TrackingAction());
-  SetUserAction(new SteppingAction(runAction));
-}
+  private:
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+};
+
+#endif

@@ -23,62 +23,29 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file ActionInitialization.cc
-/// \brief Implementation of the ActionInitialization class
+/// \file BiasingOperation.cc
+/// \brief Implementation of the BiasingOperation class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "ActionInitialization.hh"
-#include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
-// #include "TrackingAction.hh"
-#include "SteppingAction.hh"
+#include "BiasingOperation.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Constructor
 
 */
-ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization(),
-  fMasterRunAction(new RunAction)
+BiasingOperation::BiasingOperation()
+: G4VBiasingOperation()
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Destructor
 
 */
-ActionInitialization::~ActionInitialization()
+BiasingOperation::~BiasingOperation()
 {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Instanciate objects for the master thread.
-
-*/
-void ActionInitialization::BuildForMaster() const
-{
-  SetUserAction(fMasterRunAction);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Instanciate objects for the worker threads.
-
-*/
-void ActionInitialization::Build() const
-{
-  RunAction* runAction = new RunAction;
-  SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(runAction));
-  // SetUserAction(new TrackingAction());
-  SetUserAction(new SteppingAction(runAction));
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

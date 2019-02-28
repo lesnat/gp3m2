@@ -32,6 +32,7 @@
 #include "PhysicsList.hh"
 
 #include "G4EmPenelopePhysics.hh"
+#include "G4GenericBiasingPhysics.hh"
 
 #include "G4SystemOfUnits.hh"
 
@@ -50,8 +51,12 @@ PhysicsList::PhysicsList()
   SetVerboseLevel(1);
 
   // EM physics
-  //fEmPhysicsList = new PhysListLocal();
-  fEmPhysicsList = new G4EmPenelopePhysics();
+  //fPhysicsList = new PhysListLocal();
+  fPhysicsList = new G4EmPenelopePhysics();
+  // G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
+  // biasingPhysics->Bias("gamma");
+  // biasingPhysics->Bias("positron");
+  // fPhysicsList->RegisterPhysics(biasingPhysics);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -62,7 +67,7 @@ PhysicsList::PhysicsList()
 */
 PhysicsList::~PhysicsList()
 {
-  delete fEmPhysicsList;
+  delete fPhysicsList;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,7 +79,7 @@ The list of particles is taken from choosen pre-packaged PhysicsList.
 */
 void PhysicsList::ConstructParticle()
 {
-  fEmPhysicsList->ConstructParticle();
+  fPhysicsList->ConstructParticle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -90,7 +95,7 @@ void PhysicsList::ConstructProcess()
   AddTransportation();
 
   // Electromagnetic physics list
-  fEmPhysicsList->ConstructProcess();
+  fPhysicsList->ConstructProcess();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
