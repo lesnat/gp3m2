@@ -13,7 +13,8 @@
 /run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
-
+/run/printProgress 100000
+#
 /target/addLayer G4_Al 50
 /target/addLayer G4_W 50
 /target/addLayer G4_Fe 50
@@ -21,8 +22,8 @@
 #
 /input/setFileName test_input.dat
 /input/setParticle e-
-
+#
 /output/setFileName test
 /output/setLowEnergyLimit 10 keV
-
+#
 /run/beamOn 1000

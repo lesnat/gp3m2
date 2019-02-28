@@ -56,8 +56,7 @@ RunAction::RunAction()
   fPositron(0),
   fOutMessenger(0),
   fInMessenger(0),
-  fLowEnergyLimit(0),
-  fNormW(0)
+  fLowEnergyLimit(0)
 {
   // get particles definition
   fGamma    = G4Gamma::Gamma();
@@ -120,12 +119,11 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 {
   // read input file
   if (!isMaster){
-    ReadInput();
-
     G4int NbOfEntries = GetLength();
     G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
-    fNormW = (G4double)NbOfEvents/(G4double)NbOfEntries;
-    // G4cout << "fNormW : "<<std::setprecision(15)<<fNormW<<G4endl;
+    G4double normW = (G4double)NbOfEvents/(G4double)NbOfEntries;
+
+    ReadInput(normW);
   }
 
   // open output file
@@ -167,7 +165,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
   if (NtupleID!=-1)
   {
-    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight/fNormW); // weight by event
+    fAnalysisManager->FillNtupleDColumn(NtupleID,0,weight); // weight by event
     fAnalysisManager->FillNtupleDColumn(NtupleID,1,position[0]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,2,position[1]/um);
     fAnalysisManager->FillNtupleDColumn(NtupleID,3,position[2]/um);
@@ -196,7 +194,7 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
 
 */
-void RunAction::ReadInput()
+void RunAction::ReadInput(G4double normW)
 {
   // TODO: Clear fW,fX,... before import
   std::ifstream input;
@@ -211,7 +209,7 @@ void RunAction::ReadInput()
     if(str[0]=='#' or str=="") continue;
     std::stringstream ss(str);
     ss >> w >> x >> y >> z >> px >> py >> pz >> t;
-    fW.push_back(w)    ;
+    fW.push_back(w/normW)    ;
     fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
     fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
     fT.push_back(t)    ;

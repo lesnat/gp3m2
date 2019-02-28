@@ -61,7 +61,7 @@ class RunAction : public G4UserRunAction
                   G4ThreeVector momentum,
                   G4double time);
     void SetCommands();
-    void ReadInput();
+    void ReadInput(G4double normW);
 
     // get/set methods
     G4double GetEntry(G4String variable, G4int id) const
@@ -89,7 +89,6 @@ class RunAction : public G4UserRunAction
     G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
     G4double fLowEnergyLimit;
-    G4double fNormW;
 
     std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };
