@@ -30,6 +30,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "DetectorConstruction.hh"
+#include "BiasingOperation.hh"
 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -150,7 +151,7 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
   // New layer position
   G4ThreeVector position;
   position = G4ThreeVector(fTargetSizeX + width/2,0,0);
-  
+
   // Create Layer physical volume
   new G4PVPlacement(0,                     // no rotation
                     position,              // at (0,0,0)
@@ -163,6 +164,9 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
 
   fTargetSizeX += width;
   fNumberOfLayers++;
+
+  // BiasingOperation* biasing = new BiasingOperation();
+  // biasing->AttachTo(layerLV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -184,7 +188,7 @@ void DetectorConstruction::SetCommands()
     = fMessenger->DeclareMethod("addLayer",
                                 &DetectorConstruction::AddTargetLayer,
                                 "Add a new layer to the target");
-                                
+
   // set commands properties
   addLayerCmd.SetStates(G4State_Idle);
 
