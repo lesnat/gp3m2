@@ -31,6 +31,7 @@
 
 #include "PhysicsList.hh"
 
+#include "PhysicsListSimple.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4GenericBiasingPhysics.hh"
 
@@ -51,8 +52,8 @@ PhysicsList::PhysicsList()
   SetVerboseLevel(1);
 
   // EM physics
-  //fPhysicsList = new PhysListLocal();
-  fPhysicsList = new G4EmPenelopePhysics();
+  fPhysicsList = new PhysicsListSimple();
+  // fPhysicsList = new G4EmPenelopePhysics();
   // G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
   // biasingPhysics->Bias("gamma");
   // biasingPhysics->Bias("positron");

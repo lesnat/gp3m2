@@ -23,43 +23,50 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file DetectorConstruction.hh
-/// \brief Definition of the DetectorConstruction class
+/// \file electromagnetic/TestEm4/include/PhysicsListSimple.hh
+/// \brief Definition of the PhysicsListSimple class
 //
+//
+// $Id: PhysicsListSimple.hh 98767 2016-08-09 14:18:40Z gcosmo $
+//
+//
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef DetectorConstruction_h
-#define DetectorConstruction_h 1
+#ifndef PhysicsListSimple_h
+#define PhysicsListSimple_h 1
 
-#include "G4VUserDetectorConstruction.hh"
+#include "G4VPhysicsConstructor.hh"
+#include "globals.hh"
 
-class G4GenericMessenger;
-/**
-\brief Construct geometry
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-This class is shared and instanciated only once
-*/
-class DetectorConstruction : public G4VUserDetectorConstruction
+class PhysicsListSimple: public G4VPhysicsConstructor
 {
   public:
-    DetectorConstruction();
-    ~DetectorConstruction();
+    PhysicsListSimple();
+   ~PhysicsListSimple();
 
-    // base class methods
-    virtual G4VPhysicalVolume* Construct();
+  protected:
+    // Construct particle and physics
+    virtual void ConstructParticle();
+    virtual void ConstructProcess();
 
-    // user methods
-    void AddTargetLayer(G4String materialName, G4double width_um);
-    void SetCommands();
+    virtual void SetCuts();
 
-  private:
-    G4int fNumberOfLayers; /**< \brief Total number of layers in the target.*/
-    G4bool fCheckOverlaps; /**< \brief Check if volumes are overlapping.*/
-    G4double fTargetSizeX; /**< \brief Total target longitudinal size.*/
-    G4double fTargetSizeYZ; /**< \brief Target transverse size.*/
-    G4LogicalVolume* fWorldLV; /**< \brief Pointer to the world logical volume.*/
-    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
+  protected:
+    // these methods Construct particles
+    void ConstructBosons();
+    void ConstructLeptons();
+
+  protected:
+  // these methods Construct physics processes and register them
+    // void ConstructGeneral();
+    void ConstructEM();
+
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
