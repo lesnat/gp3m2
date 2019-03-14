@@ -34,8 +34,6 @@
 
 #include "G4VUserDetectorConstruction.hh"
 
-class G4VPhysicalVolume;
-class G4VLogicalVolume;
 class G4GenericMessenger;
 /**
 \brief Construct geometry

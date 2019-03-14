@@ -51,14 +51,14 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
     // base class methods
     virtual void GeneratePrimaries(G4Event*);
-    
+
     // user methods
     void SetCommands();
 
   private:
     G4String fParticleName;
     G4ParticleTable* fParticleTable;
-    RunAction* fMasterRunAction;
+    RunAction* fRunAction;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
