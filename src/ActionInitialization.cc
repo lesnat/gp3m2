@@ -32,7 +32,6 @@
 #include "ActionInitialization.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
-// #include "TrackingAction.hh"
 #include "SteppingAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -76,7 +75,6 @@ void ActionInitialization::Build() const
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
   SetUserAction(new PrimaryGeneratorAction(runAction));
-  // SetUserAction(new TrackingAction());
   SetUserAction(new SteppingAction(runAction));
 }
 

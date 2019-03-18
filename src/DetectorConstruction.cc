@@ -30,7 +30,6 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "DetectorConstruction.hh"
-#include "BiasingOperation.hh"
 
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -165,8 +164,6 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
   fTargetSizeX += width;
   fNumberOfLayers++;
 
-  // BiasingOperation* biasing = new BiasingOperation();
-  // biasing->AttachTo(layerLV);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

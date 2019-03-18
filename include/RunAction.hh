@@ -61,7 +61,7 @@ class RunAction : public G4UserRunAction
                   G4ThreeVector momentum,
                   G4double time);
     void SetCommands();
-    void ReadInput(G4double normW);
+    void ReadInput(G4int NbOfEvents);
 
     // get/set methods
     G4double GetEntry(G4String variable, G4int id) const

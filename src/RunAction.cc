@@ -119,11 +119,8 @@ void RunAction::BeginOfRunAction(const G4Run* aRun)
 {
   // read input file
   if (!isMaster){
-    G4int NbOfEntries = GetLength();
     G4int NbOfEvents = aRun->GetNumberOfEventToBeProcessed();
-    G4double normW = (G4double)NbOfEvents/(G4double)NbOfEntries;
-
-    ReadInput(normW);
+    ReadInput(NbOfEvents);
   }
 
   // open output file
@@ -175,15 +172,6 @@ void RunAction::FillData(const G4ParticleDefinition* part,
     fAnalysisManager->FillNtupleDColumn(NtupleID,7,time/(1e-3*ps));
 
     fAnalysisManager->AddNtupleRow(NtupleID);
-
-    // G4cout<<std::scientific<<std::setprecision(15)<<weight<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<position[0]/um<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<position[1]/um<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<position[2]/um<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[0]/MeV<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[1]/MeV<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<momentum[2]/MeV<<G4endl;
-    // G4cout<<std::scientific<<std::setprecision(15)<<time/(1e-3*ps)<<G4endl;
   }
 }
 
@@ -194,33 +182,43 @@ void RunAction::FillData(const G4ParticleDefinition* part,
 
 
 */
-void RunAction::ReadInput(G4double normW)
+void RunAction::ReadInput(G4int NbOfEvents)
 {
-  // TODO: Clear fW,fX,... before import
+  // Clear fW,fX,... before import
+  fW.clear()    ;
+  fX.clear()    ; fY.clear()  ; fZ.clear();
+  fPx.clear()   ; fPy.clear() ; fPz.clear();
+  fT.clear()    ;
+  // Define streams
   std::ifstream input;
   std::string str;
   input.open(fInFileName);
 
+  // Declare temporary variables
   G4double w,x,y,z,px,py,pz,t;
 
+  // Read file
   while (!input.eof())
   {
+    // Get lines, ignore comments and empty lines
     std::getline(input,str);
     if(str[0]=='#' or str=="") continue;
     std::stringstream ss(str);
+    // Save input data
     ss >> w >> x >> y >> z >> px >> py >> pz >> t;
-    fW.push_back(w/normW)    ;
-    fX.push_back(x)    ; fY.push_back(y)  ; fZ.push_back(z);
-    fPx.push_back(px)  ; fPy.push_back(py); fPz.push_back(pz);
-    fT.push_back(t)    ;
-
-    // std::cout<<str<<std::endl;
-    // std::cout << "\nw "<<std::scientific<<std::setprecision(15)<<w
-    //           <<"\nx "<<std::scientific<<std::setprecision(15)<<x
-    //           <<"\npx "<<std::scientific<<std::setprecision(15)<<px
-    //           <<"\nt "<<std::scientific<<std::setprecision(15)<<t<<std::endl;
+    fW.push_back(w)   ;
+    fX.push_back(x)   ; fY.push_back(y)  ; fZ.push_back(z);
+    fPx.push_back(px) ; fPy.push_back(py); fPz.push_back(pz);
+    fT.push_back(t)   ;
   }
   input.close();
+
+  // Normalize weights
+  G4double normW = (G4double)NbOfEvents/(G4double)fW.size();
+  for (unsigned int i=0; i<fW.size(); i++)
+  {
+    fW[i] = fW[i]/normW;
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

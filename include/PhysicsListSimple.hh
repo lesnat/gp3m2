@@ -23,48 +23,35 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/TestEm4/include/PhysicsListSimple.hh
-/// \brief Definition of the PhysicsListSimple class
-//
-//
-// $Id: PhysicsListSimple.hh 98767 2016-08-09 14:18:40Z gcosmo $
-//
-//
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// $Id: PhysicsListSimple.hh 105735 2017-08-16 12:59:43Z gcosmo $
 
 #ifndef PhysicsListSimple_h
 #define PhysicsListSimple_h 1
 
 #include "G4VPhysicsConstructor.hh"
+#include "G4EmParticleList.hh"
 #include "globals.hh"
 
+class G4ParticleDefinition;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class PhysicsListSimple: public G4VPhysicsConstructor
+class PhysicsListSimple : public G4VPhysicsConstructor
 {
-  public:
-    PhysicsListSimple();
-   ~PhysicsListSimple();
+public:
 
-  protected:
-    // Construct particle and physics
-    virtual void ConstructParticle();
-    virtual void ConstructProcess();
+  PhysicsListSimple();
 
-    virtual void SetCuts();
+  virtual ~PhysicsListSimple();
 
-  protected:
-    // these methods Construct particles
-    void ConstructBosons();
-    void ConstructLeptons();
+  virtual void ConstructParticle();
+  virtual void ConstructProcess();
 
-  protected:
-  // these methods Construct physics processes and register them
-    // void ConstructGeneral();
-    void ConstructEM();
-
+private:
+  G4ParticleDefinition* fGamma;
+  G4ParticleDefinition* fElectron;
+  G4ParticleDefinition* fPositron;
+  // G4int  verbose;
+  // G4EmParticleList partList;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

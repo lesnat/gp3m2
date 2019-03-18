@@ -31,12 +31,10 @@
 
 #include "PhysicsList.hh"
 
-#include "PhysicsListSimple.hh"
+// #include "PhysicsListSimple.hh"
 #include "G4EmPenelopePhysics.hh"
-#include "G4GenericBiasingPhysics.hh"
 
 #include "G4SystemOfUnits.hh"
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -52,12 +50,8 @@ PhysicsList::PhysicsList()
   SetVerboseLevel(1);
 
   // EM physics
-  fPhysicsList = new PhysicsListSimple();
-  // fPhysicsList = new G4EmPenelopePhysics();
-  // G4GenericBiasingPhysics* biasingPhysics = new G4GenericBiasingPhysics();
-  // biasingPhysics->Bias("gamma");
-  // biasingPhysics->Bias("positron");
-  // fPhysicsList->RegisterPhysics(biasingPhysics);
+  //fPhysicsList = new PhysicsListSimple();
+  fPhysicsList = new G4EmPenelopePhysics();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
