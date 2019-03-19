@@ -72,7 +72,8 @@ int main(int argc,char** argv)
     UImanager->ApplyCommand("/control/execute init.mac");
 
     // start interactive session
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    // G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    G4UIExecutive* ui = new G4UIExecutive(1, &argv[0]);
     ui->SessionStart();
     delete ui;
   }
@@ -80,12 +81,13 @@ int main(int argc,char** argv)
   {
     // initialize interactive session and visualization
     G4VisManager* visManager = new G4VisExecutive;
-    //visManager->Initialize();
+    visManager->Initialize();
     //UImanager->ApplyCommand("/control/execute init.mac");
     UImanager->ApplyCommand("/control/execute init_vis.mac");
 
     // start interactive session
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    // G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    G4UIExecutive* ui = new G4UIExecutive(1, &argv[0]);
     ui->SessionStart();
     delete ui;
     delete visManager;

@@ -44,6 +44,7 @@ target_link_libraries(gp3m2 ${Geant4_LIBRARIES})
 set(EXAMPLEED_SCRIPTS
   init.mac
   init_vis.mac
+  vis.mac
   )
 
 foreach(_script ${EXAMPLEED_SCRIPTS})
