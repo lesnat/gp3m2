@@ -35,6 +35,7 @@
 #include "G4VModularPhysicsList.hh"
 
 class G4VPhysicsConstructor;
+class G4GenericMessenger;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -53,8 +54,13 @@ class PhysicsList: public G4VModularPhysicsList
     virtual void ConstructProcess();
     virtual void SetCuts();
 
+  protected:
+    void SetPhysicsList(G4String name);
+    void SetCommands();
+
   private:
     G4VPhysicsConstructor*  fPhysicsList; /**< \brief Pointer to the used pre-packaged PhysicsList.*/
+    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

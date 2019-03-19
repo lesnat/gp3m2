@@ -49,7 +49,7 @@ DetectorConstruction::DetectorConstruction()
   fNumberOfLayers(0),
   fCheckOverlaps(true),
   fTargetSizeX(0),
-  fTargetSizeYZ(1*cm),
+  fTargetSizeYZ(10*cm),
   fWorldLV(0),
   fMessenger(0)
 {
@@ -81,8 +81,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   G4NistManager* nist = G4NistManager::Instance();
 
   // Define World default properties
-  G4double worldX  = 0.5*cm;
-  G4double worldYZ = 1.*cm;
+  G4double worldX  = 5*cm;
+  G4double worldYZ = 10.*cm;
   G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
 
   // Create World solid
