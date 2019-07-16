@@ -31,7 +31,6 @@
 
 #include "PhysicsList.hh"
 
-// #include "PhysicsListSimple.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmStandardPhysics.hh"
 

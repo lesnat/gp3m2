@@ -61,7 +61,7 @@ ActionInitialization::~ActionInitialization()
 */
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(new RunAction);
+  // SetUserAction(new RunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
