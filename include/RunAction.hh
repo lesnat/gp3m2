@@ -38,6 +38,7 @@
 
 class G4Run;
 class G4ParticleDefinition;
+class Diagnostics;
 #include "G4GenericMessenger.hh"
 
 /**
@@ -76,19 +77,13 @@ class RunAction : public G4UserRunAction
       else G4cerr << "Unknown variable name in RunAction::GetEntry."<< G4endl; throw;};
     G4int GetLength() const {return fW.size();};
     G4GenericMessenger* GetInMessenger() {return fInMessenger;};
-    G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
-    G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
+    Diagnostics* GetDiagnostics() {return fDiagnostics;};
 
   private:
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
-    G4String fOutFileName; /**< \brief Output file name.*/
     G4String fInFileName; /**< \brief Input file name.*/
-    const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
-    const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
-    const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
-    G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
-    G4double fLowEnergyLimit;
+    Diagnostics* fDiagnostics;
 
     std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
 };

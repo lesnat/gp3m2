@@ -32,6 +32,7 @@
 
 #include "SteppingAction.hh"
 #include "RunAction.hh"
+#include "Diagnostics.hh"
 
 #include "G4SteppingManager.hh" // includes all the needed classes for SteppingAction
 
@@ -75,14 +76,14 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
     aTrack->GetDynamicParticle()->GetDefinition();
 
   if (postStepPoint->GetStepStatus() == fGeomBoundary &&
-      postStepPoint->GetKineticEnergy() > fRunAction->GetLowEnergyLimit())
+      postStepPoint->GetKineticEnergy() > fRunAction->GetDiagnostics()->GetLowEnergyLimit())
   {
     G4double      weight    = postStepPoint->GetWeight();
     G4ThreeVector position  = postStepPoint->GetPosition();
     G4ThreeVector momentum  = postStepPoint->GetMomentum();
     G4double      time      = postStepPoint->GetGlobalTime();
 
-    fRunAction->FillData(particle,weight,position,momentum,time);
+    fRunAction->GetDiagnostics()->FillDiagSurfacePhaseSpace(particle,weight,position,momentum,time);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

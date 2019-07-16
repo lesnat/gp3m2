@@ -32,6 +32,7 @@
 #include "Diagnostics.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4GenericMessenger.hh"
+#include "G4ParticleTable.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
@@ -40,11 +41,11 @@
 */
 Diagnostics::Diagnostics()
 : fOutFileBaseName("results"),
-fMessenger(nullptr),
-fLowEnergyLimit(0.),
-fHighEnergyLimit(10000000000),
-fParticleTable(nullptr),
-fDiagSurfacePhaseSpaceActivation(false),
+  fMessenger(nullptr),
+  fLowEnergyLimit(0.),
+  fHighEnergyLimit(10000000000),
+  fParticleTable(nullptr),
+  fDiagSurfacePhaseSpaceActivation(false)
 {
   fParticleTable = G4ParticleTable::GetParticleTable();
 
@@ -67,13 +68,20 @@ Diagnostics::~Diagnostics()
   delete fMessenger;
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void Diagnostics::InitializeAllDiags()
+{
+  // open output file
+  fAnalysisManager->OpenFile(fOutFileBaseName);
+}
+
 // methods to create diagnostics
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 {
   // create Ntuples
-  G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter.size();
+  G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter.Size();
 
   fAnalysisManager->CreateNtuple(particle , particle + " phase space");
 
@@ -88,7 +96,7 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 
   fAnalysisManager->FinishNtuple(currentNtupleId);
 
-  fDiagSurfacePhaseSpaceCounter[fParticleTable->GetParticle(particle)] = currentNtupleId;
+  fDiagSurfacePhaseSpaceCounter[fParticleTable->FindParticle(particle)] = currentNtupleId;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // void Diagnostics::CreateDiagSurfaceEnergySpectra() {}
@@ -160,7 +168,7 @@ void Diagnostics::FinishAllDiags()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void SetCommands()
+void Diagnostics::SetCommands()
 {
   // get UI messengers
   fMessenger = new G4GenericMessenger(this,"/diags/","Manage simulation output");
@@ -182,6 +190,11 @@ void SetCommands()
                                 "MeV",
                                 fHighEnergyLimit,
                                 "Change low energy limit");
+
+  G4GenericMessenger::Command& createDiagSurfacePhaseSpaceCmd
+    = fMessenger->DeclareMethod("createDiagSurfacePhaseSpace",
+                                &Diagnostics::CreateDiagSurfacePhaseSpace,
+                                "Add a new layer to the target");
 
   // set commands properties
   setOutFileBaseNameCmd.SetStates(G4State_Idle);

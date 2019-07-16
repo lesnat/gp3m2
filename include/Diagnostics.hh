@@ -38,12 +38,13 @@ class G4ParticleDefinition;
 class G4ParticleTable;
 
 #include "G4GenericMessenger.hh"
+#include "G4Cache.hh"
 
 /**
 \brief Creates and writes diagnostic output files.
 
 */
-class Diagnostics:
+class Diagnostics
 {
   public:
     Diagnostics();
@@ -51,7 +52,7 @@ class Diagnostics:
 
     // user methods
     // methods to create diagnostics
-    void CreateDiagSurfacePhaseSpace();
+    void CreateDiagSurfacePhaseSpace(G4String particle);
     // void CreateDiagSurfaceEnergySpectra();
     // void CreateDiagSurfaceThetaSpectra();
     // void CreateDiagSurfacePhiSpectra();
@@ -74,6 +75,7 @@ class Diagnostics:
 
 
     // methods to write output file
+    void InitializeAllDiags();
     void FinishAllDiags();
     void SetCommands();
 
@@ -97,7 +99,7 @@ class Diagnostics:
     G4bool fDiagSurfacePhaseSpaceActivation;
 
     G4ParticleTable* fParticleTable;
-    std::map <G4ParticleDefinition part, G4int id> fDiagSurfacePhaseSpaceCounter;
+    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceCounter;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

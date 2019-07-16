@@ -23,7 +23,10 @@
 /input/setFileName input.dat
 /input/setParticle e-
 #
-/output/setFileName test
-/output/setLowEnergyLimit 10 keV
+/diags/setFileBaseName test
+/diags/setLowEnergyLimit 10 keV
+/diags/createDiagSurfacePhaseSpace electron
+/diags/createDiagSurfacePhaseSpace gamma
+/diags/createDiagSurfacePhaseSpace positron
 #
 /run/beamOn 1000
