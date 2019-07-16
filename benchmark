@@ -2,7 +2,7 @@
 
 SRC=../../build/gp3m2
 MACRO=run.mac
-PY=python
+PY=python3
 
 LOG=log.txt
 

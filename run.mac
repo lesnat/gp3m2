@@ -20,7 +20,7 @@
 /target/addLayer G4_Fe 50
 /target/addLayer G4_W 50
 #
-/input/setFileName test_input.dat
+/input/setFileName input.dat
 /input/setParticle e-
 #
 /output/setFileName test
