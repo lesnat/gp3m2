@@ -39,6 +39,7 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+#include "Units.hh"
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
@@ -54,12 +55,14 @@ int main(int argc,char** argv)
     G4RunManager* runManager = new G4RunManager;
   #endif
 
+  Units* units = new Units();
+
   // set mandatory initialization classes
-  runManager->SetUserInitialization(new DetectorConstruction);
+  runManager->SetUserInitialization(new DetectorConstruction(units));
   runManager->SetUserInitialization(new PhysicsList);
 
   // set user action classes
-  runManager->SetUserInitialization(new ActionInitialization);
+  runManager->SetUserInitialization(new ActionInitialization(units));
 
   // get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
@@ -81,12 +84,9 @@ int main(int argc,char** argv)
   {
     // initialize interactive session and visualization
     G4VisManager* visManager = new G4VisExecutive;
-    visManager->Initialize();
-    //UImanager->ApplyCommand("/control/execute init.mac");
     UImanager->ApplyCommand("/control/execute init_vis.mac");
 
     // start interactive session
-    // G4UIExecutive* ui = new G4UIExecutive(argc, argv);
     G4UIExecutive* ui = new G4UIExecutive(1, &argv[0]);
     ui->SessionStart();
     delete ui;
@@ -110,7 +110,7 @@ int main(int argc,char** argv)
     G4cerr << " gp3m2 -m macro  :"
            << " launch the macro file `macro`" << G4endl;
     G4cerr << G4endl;
-
+    
     // return error code
     return 1;
   }

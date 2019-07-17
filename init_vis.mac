@@ -7,6 +7,10 @@
 /control/verbose 2
 /control/saveHistory
 /run/verbose 2
+# Define simulation units
+/units/setPositionUnit um
+/units/setMomentumUnit MeV
+/units/setTimeUnit fs
 #
 # Change the default number of threads (in multi-threaded mode)
 /run/numberOfThreads 1
@@ -14,15 +18,17 @@
 # Initialize kernel
 /run/initialize
 #
-/target/addLayer G4_Al 50
-/target/addLayer G4_W 50
-/target/addLayer G4_Fe 50
-/target/addLayer G4_W 50
+# /target/addLayer G4_Al 5000
+# /target/addLayer G4_W 5000
+# /target/addLayer G4_Fe 5000
+# /target/addLayer G4_W 5000
+/target/addLayer G4_Al 36000
 #
 /input/setFileName input.dat
 /input/setParticle e-
 
-/output/setFileName vis
-/output/setLowEnergyLimit 10 keV
+/diags/setFileBaseName vis
+/diags/setLowEnergyLimit 10 keV
 # Visualization setting
+/vis/initialize
 #/control/execute vis.mac
