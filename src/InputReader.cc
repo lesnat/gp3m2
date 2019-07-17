@@ -30,17 +30,23 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "InputReader.hh"
+#include "Units.hh"
 
+#include "G4GenericMessenger.hh"
+#include "G4SystemOfUnits.hh"
+
+#include <fstream>
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Create analysis manager, Ntuples and set UI commands.
+\brief Call the SetCommands method.
 
 */
-InputReader::InputReader()
-: fNumberOfEvents(0),
-  fInFileName(""),
-  fMessenger(nullptr)
+InputReader::InputReader(Units* units)
+: fMessenger(nullptr),
+  fUnits(units),
+  fInputFileName(""),
+  fParticleName("geantino")
 {
   SetCommands();
 }
@@ -59,9 +65,15 @@ InputReader::~InputReader()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
+\brief Read the input phase space, and save macro-particles characteristics into arrays.
 
+The input file format must be a list of macro-particles:
+w   x   y   z   px  py  pz  t
+w   x   y   z   px  py  pz  t
+w   x   y   z   px  py  pz  t
+w   x   y   z   px  py  pz  t
 
+with separators being spaces.
 */
 void InputReader::ReadInputFile()
 {
@@ -71,10 +83,15 @@ void InputReader::ReadInputFile()
   fPx.clear()   ; fPy.clear() ; fPz.clear();
   fT.clear()    ;
 
+  // Get simulation units
+  G4double rUnit = fUnits->GetPositionUnitValue();
+  G4double pUnit = fUnits->GetMomentumUnitValue();
+  G4double tUnit = fUnits->GetTimeUnitValue();
+
   // Define streams
   std::ifstream input;
   std::string str;
-  input.open(fInFileName);
+  input.open(fInputFileName);
 
   // Declare temporary variables
   G4double w,x,y,z,px,py,pz,t;
@@ -87,12 +104,12 @@ void InputReader::ReadInputFile()
     if(str[0]=='#' or str=="") continue;
     std::stringstream ss(str);
 
-    // Save input data
+    // Save input data in code units
     ss >> w >> x >> y >> z >> px >> py >> pz >> t;
-    fW.push_back(w)   ;
-    fX.push_back(x)   ; fY.push_back(y)  ; fZ.push_back(z);
-    fPx.push_back(px) ; fPy.push_back(py); fPz.push_back(pz);
-    fT.push_back(t)   ;
+    fW.push_back(w)         ;
+    fX.push_back(x*rUnit)   ; fY.push_back(y*rUnit)  ; fZ.push_back(z*rUnit);
+    fPx.push_back(px*pUnit) ; fPy.push_back(py*pUnit); fPz.push_back(pz*pUnit);
+    fT.push_back(t*tUnit)   ;
   }
   input.close();
 }
@@ -100,15 +117,14 @@ void InputReader::ReadInputFile()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief
-
+\brief Normalize macro-particles weights in order to conserve total number of particles
 
 */
 void InputReader::NormalizeMacroParticlesWeights(G4int NumberOfEventsToBeProcessed)
 {
   G4int NumberOfMacroParticles = fW.size();
   G4double normW = (G4double)NumberOfEventsToBeProcessed/(G4double)NumberOfMacroParticles;
-  for (unsigned int i=0; i<NumberOfMacroParticles; i++)
+  for (int i=0; i<NumberOfMacroParticles; i++)
   {
     fW[i] = fW[i]/normW;
   }
@@ -122,19 +138,26 @@ void InputReader::NormalizeMacroParticlesWeights(G4int NumberOfEventsToBeProcess
 
 The input file name can be changed by using
 /input/setFileName fileName
+/input/setParticle particleName
 
 */
 void InputReader::SetCommands()
 {
   // get UI messengers
-  fInMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
+  fMessenger = new G4GenericMessenger(this,"/input/","Manage simulation input");
 
   // define commands
-  G4GenericMessenger::Command& setInFileNameCmd
-    = fInMessenger->DeclareProperty("setFileName",
-                                fInFileName,
+  G4GenericMessenger::Command& setInputFileNameCmd
+    = fMessenger->DeclareMethod("setFileName",
+                                &InputReader::SetInputFileName,
                                 "Change input file name");
 
+  G4GenericMessenger::Command& setParticleNameCmd
+    = fMessenger->DeclareMethod("setParticle",
+                              &InputReader::SetParticleName,
+                              "Change particle type");
+
   // set commands properties
-  setInFileNameCmd.SetStates(G4State_Idle);
+  setParticleNameCmd.SetStates(G4State_Idle);
+  setInputFileNameCmd.SetStates(G4State_Idle);
 }

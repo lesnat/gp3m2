@@ -32,14 +32,19 @@
 #ifndef InputReader_h
 #define InputReader_h 1
 
+class G4GenericMessenger;
+class Units;
+#include "globals.hh"
+#include "G4ThreeVector.hh"
+
 /**
-\brief Read input file.
+\brief Read input file and interact with input macro-particles.
 
 */
 class InputReader
 {
   public:
-    InputReader();
+    InputReader(Units* units);
     ~InputReader();
 
     // user methods
@@ -48,19 +53,31 @@ class InputReader
 
     // get/set methods
     G4double GetMacroParticleWeight(G4int id) const {return fW[id];};
-    G4double GetMacroParticlePosition(G4int id) const {return G4ThreeVector(fX[id],fY[id],fZ[id]);};
-    G4double GetMacroParticleMomentum(G4int id) const {return G4ThreeVector(fPx[id],fPy[id],fPz[id]);};
+    G4ThreeVector GetMacroParticlePosition(G4int id) const {return G4ThreeVector(fX[id],fY[id],fZ[id]);};
+    G4ThreeVector GetMacroParticleMomentum(G4int id) const {return G4ThreeVector(fPx[id],fPy[id],fPz[id]);};
     G4double GetMacroParticleTime(G4int id) const {return fT[id];};
 
     G4int GetNumberOfMacroParticles() const {return fW.size();};
 
-    G4GenericMessenger* GetMessenger() {return fMessenger;};
+    G4String GetParticleName() {return fParticleName;};
+
+    void SetInputFileName(G4String inputFileName) {fInputFileName = inputFileName;};
+    void SetParticleName(G4String particleName) {fParticleName = particleName;};
+
+    void SetCommands();
 
   private:
-    G4String fInFileName; /**< \brief Input file name.*/
+    // Geant4 pointers
     G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
 
-    std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
+    // User pointers
+    Units* fUnits; /**< \brief Pointer to the Units instance.*/
+
+    // User variables
+    G4String fInputFileName; /**< \brief Input file name.*/
+    G4String fParticleName; /**< \brief Input particle name.*/
+
+    std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;  /**< \brief Arrays containing input macro-particles characteristics.*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

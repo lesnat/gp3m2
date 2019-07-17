@@ -30,21 +30,24 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "Diagnostics.hh"
-#include "G4SystemOfUnits.hh"
+
+#include "Units.hh"
 #include "G4GenericMessenger.hh"
 #include "G4ParticleTable.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
-\brief Create analysis manager, Ntuples and set UI commands.
+\brief Retrieve analysis manager instance, initialize diagnostics numbers and call SetCommands.
 
 */
-Diagnostics::Diagnostics()
-: fOutFileBaseName("results"),
+Diagnostics::Diagnostics(Units* units)
+: fAnalysisManager(nullptr),
   fMessenger(nullptr),
+  fParticleTable(nullptr),
+  fUnits(units),
+  fOutputFileBaseName("results"),
   fLowEnergyLimit(0.),
   fHighEnergyLimit(10000000000),
-  fParticleTable(nullptr),
   fDiagSurfacePhaseSpaceActivation(false)
 {
   fParticleTable = G4ParticleTable::GetParticleTable();
@@ -63,39 +66,56 @@ Diagnostics::Diagnostics()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief Delete messenger.
+
+*/
 Diagnostics::~Diagnostics()
 {
   delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief Initialize diagnostics by opening output files.
+
+*/
 void Diagnostics::InitializeAllDiags()
 {
   // open output file
-  fAnalysisManager->OpenFile(fOutFileBaseName);
+  fAnalysisManager->OpenFile(fOutputFileBaseName);
 }
 
-// methods to create diagnostics
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief Create a diagnostic that export the particle phase space.
+
+The diagnostic is activated, and the correspondance between the given particle
+and its Ntuple id is stored in the fDiagSurfacePhaseSpaceCounter map.
+
+*/
 void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 {
+  // activate surface phase space diagnostic
+  fDiagSurfacePhaseSpaceActivation = true;
+
   // create Ntuples
   G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter.Size();
 
   fAnalysisManager->CreateNtuple(particle , particle + " phase space");
 
   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x0_um");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x1_um");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x2_um");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "p0_MeV");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "p1_MeV");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "p2_MeV");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "time_fs");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "px ["+fUnits->GetMomentumUnitLabel()+"/c]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "py ["+fUnits->GetMomentumUnitLabel()+"/c]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "pz ["+fUnits->GetMomentumUnitLabel()+"/c]");
+  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
 
   fAnalysisManager->FinishNtuple(currentNtupleId);
 
+  // save correspondance between particle and Ntuple ID
   fDiagSurfacePhaseSpaceCounter[fParticleTable->FindParticle(particle)] = currentNtupleId;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -119,29 +139,40 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 // methods to fill diagnostics
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4Step* stepPoint)
+/**
+\brief Fill the particle phase space diagnostic at each layer surface.
+
+*/
+void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
 {
-  G4int currentNtupleID = fDiagSurfacePhaseSpaceCounter[part];
+  G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter[part];
 
   if (stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
       stepPoint->GetKineticEnergy() > GetLowEnergyLimit() &&    // The particle's kinetic energy is higher than given threshold
       stepPoint->GetKineticEnergy() < GetHighEnergyLimit())     // The particle's kinetic energy is lower than given threshold
   {
-    G4double      weight    = stepPoint->GetWeight();
-    G4ThreeVector position  = stepPoint->GetPosition();
-    G4ThreeVector momentum  = stepPoint->GetMomentum();
-    G4double      time      = stepPoint->GetGlobalTime();
+    // Get simulation units
+    G4double rUnit = fUnits->GetPositionUnitValue();
+    G4double pUnit = fUnits->GetMomentumUnitValue();
+    G4double tUnit = fUnits->GetTimeUnitValue();
 
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,0,weight); // weight by event
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,1,position[0]/um);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,2,position[1]/um);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,3,position[2]/um);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,4,momentum[0]/MeV);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,5,momentum[1]/MeV);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,6,momentum[2]/MeV);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleID,7,time/(1e-3*ps));
+    // Get the particle properties
+    G4double      w   = stepPoint->GetWeight();
+    G4ThreeVector r   = stepPoint->GetPosition();
+    G4ThreeVector p   = stepPoint->GetMomentum();
+    G4double      t   = stepPoint->GetGlobalTime();
 
-    fAnalysisManager->AddNtupleRow(currentNtupleID);
+    // Fill the Ntuple
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,0,w); // weight by event
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,1,r[0]/rUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,2,r[1]/rUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,3,r[2]/rUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,4,p[0]/pUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,5,p[1]/pUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,6,p[2]/pUnit);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleId,7,t/tUnit);
+
+    fAnalysisManager->AddNtupleRow(currentNtupleId);
   }
 }
 
@@ -170,9 +201,11 @@ void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, co
 // {}
 
 
-// methods to write output file
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief Write and close output files.
+
+*/
 void Diagnostics::FinishAllDiags()
 {
   fAnalysisManager->Write();
@@ -180,15 +213,25 @@ void Diagnostics::FinishAllDiags()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+/**
+\brief Define UI commands.
+
+The input file name can be changed by using
+/diags/setFileBaseName baseName
+/diags/setLowEnergyLimit value unit
+/diags/setHighEnergyLimit value unit
+/diags/createDiagSurfacePhaseSpace particleName
+
+*/
 void Diagnostics::SetCommands()
 {
-  // get UI messengers
+  // get UI messenger
   fMessenger = new G4GenericMessenger(this,"/diags/","Manage simulation output");
 
   // define commands
-  G4GenericMessenger::Command& setOutFileBaseNameCmd
+  G4GenericMessenger::Command& setOutputFileBaseNameCmd
     = fMessenger->DeclareProperty("setFileBaseName",
-                                fOutFileBaseName,
+                                fOutputFileBaseName,
                                 "Change output file name");
 
   G4GenericMessenger::Command& setLowEnergyLimitCmd
@@ -209,16 +252,19 @@ void Diagnostics::SetCommands()
                                 "Add a new layer to the target");
 
   // set commands properties
-  setOutFileBaseNameCmd.SetStates(G4State_Idle);
+  setOutputFileBaseNameCmd.SetStates(G4State_Idle);
 
   setLowEnergyLimitCmd.SetStates(G4State_Idle);
   setLowEnergyLimitCmd.SetParameterName("lowE", true);
   setLowEnergyLimitCmd.SetRange("lowE>=0.");
   setLowEnergyLimitCmd.SetDefaultValue("0.");
   // setLowEnergyLimitCmd.SetUnitCategory("Energy");
+
   setHighEnergyLimitCmd.SetStates(G4State_Idle);
   setHighEnergyLimitCmd.SetParameterName("lowE", true);
   setHighEnergyLimitCmd.SetRange("lowE>=0.");
   setHighEnergyLimitCmd.SetDefaultValue("1e10");
   // setHighEnergyLimitCmd.SetUnitCategory("Energy");
+
+  createDiagSurfacePhaseSpaceCmd.SetStates(G4State_Idle);
 }

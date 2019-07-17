@@ -38,7 +38,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
-\brief Save pointer to the current RunAction instance.
+\brief Save pointer to the current Diagnostics instance.
 
 */
 SteppingAction::SteppingAction(Diagnostics* diagnostics)
@@ -49,7 +49,7 @@ SteppingAction::SteppingAction(Diagnostics* diagnostics)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Delete pointer to the current RunAction instance.
+\brief Do nothing.
 
 */
 SteppingAction::~SteppingAction()
@@ -59,15 +59,14 @@ SteppingAction::~SteppingAction()
 
 
 /**
-\brief Add a new line to the corresponding Ntuple
-       if the particle is crossing a boundary.
+\brief Call the Diagnostics FillDiagXXX methods if they are activated.
 
 This virtual method is called at each Step ends.
 */
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
   // Get step points
-  G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+  // G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
   G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
 
   // Retrieve particle type
@@ -77,7 +76,8 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
   // Fill diagnostics
   if (fDiagnostics->GetDiagSurfacePhaseSpaceActivation())
   {
-    fDiagnostics->FillDiagSurfacePhaseSpace(particle, postStepPoint);
+    // fDiagnostics->FillDiagSurfacePhaseSpace(particle, postStepPoint);
+    fDiagnostics->FillDiagSurfacePhaseSpace(particle, preStepPoint);
   }
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -44,7 +44,8 @@
 */
 PhysicsList::PhysicsList()
 : G4VModularPhysicsList(),
-  fMessenger(0)
+  fPhysicsList(nullptr),
+  fMessenger(nullptr)
 {
   // set default cut value
   SetDefaultCutValue(1.0*um);

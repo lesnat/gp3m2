@@ -38,18 +38,19 @@
 
 class G4Run;
 class G4ParticleDefinition;
+class Units;
 class InputReader;
 class Diagnostics;
 #include "G4GenericMessenger.hh"
 
 /**
-\brief Creates and writes diagnostic output files.
+\brief Deal with input file reading and diagnostic creation.
 
 */
 class RunAction : public G4UserRunAction
 {
   public:
-    RunAction();
+    RunAction(Units* units);
     ~RunAction();
 
     // base class methods
@@ -61,8 +62,14 @@ class RunAction : public G4UserRunAction
     Diagnostics* GetDiagnostics() {return fDiagnostics;};
 
   private:
-    InputReader* fInputReader;
-    Diagnostics* fDiagnostics;
+    // Geant4 pointers
+
+    // User pointers
+    Units* fUnits; /**< \brief Pointer to the Units instance.*/
+    InputReader* fInputReader; /**< \brief Pointer to the InputReader instance.*/
+    Diagnostics* fDiagnostics; /**< \brief Pointer to the Diagnostics instance.*/
+
+    // User variables
 
 };
 

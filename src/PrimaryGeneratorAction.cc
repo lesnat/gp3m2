@@ -39,28 +39,23 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTable.hh"
 
-#include "Randomize.hh"
-#include "G4SystemOfUnits.hh"
+#include "G4ParticleGun.hh"
 
-#include "G4GenericMessenger.hh"
+#include "Randomize.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Instanciate G4ParticleGun and define default primary particles properties
+\brief Retrieve the G4ParticleTable instance.
 
 */
 PrimaryGeneratorAction::PrimaryGeneratorAction(InputReader* inputReader)
 : G4VUserPrimaryGeneratorAction(),
-  fParticleName("geantino"),
-  fParticleTable(0),
+  fParticleTable(nullptr),
   fInputReader(inputReader)
 {
   // get particle table instance
   fParticleTable = G4ParticleTable::GetParticleTable();
-
-  // define UI commands
-  SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -77,70 +72,40 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction()
 /**
 \brief Generate primary particles.
 
-A random configuration is taken from the input file,
-and the primary particle properties are defined with this configuration.
+The primary particle is defined with properties of a random input macro-particle.
 
 This virtual function is called at the begining of each event.
 */
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
 {
   // get particle definition
-  G4ParticleDefinition* particleDefinition = fParticleTable->FindParticle(fParticleName);
+  G4ParticleDefinition* particleDefinition
+    = fParticleTable->FindParticle(fInputReader->GetParticleName());
 
-  // generate a random int corresponding to a line in the input file
-  G4int id = std::floor(G4UniformRand() * fInputReader->GetLength());
-
-  // get statistical weight
-  G4double w0 = fInputReader->GetEntry("w",id);
-
-  // get position
-  G4double x0 = fInputReader->GetEntry("x",id);
-  G4double y0 = fInputReader->GetEntry("y",id);
-  G4double z0 = fInputReader->GetEntry("z",id);
-
-  // get momentum
-  G4double px0 = fInputReader->GetEntry("px",id);
-  G4double py0 = fInputReader->GetEntry("py",id);
-  G4double pz0 = fInputReader->GetEntry("pz",id);
-
-  // get initial time
-  G4double t0 = fInputReader->GetEntry("t",id);
-
-  // create & set particle properties
+  // create a primary particle
   G4PrimaryParticle* particle = new G4PrimaryParticle(particleDefinition);
-  particle->SetWeight(w0);
-  particle->SetMomentum(px0*MeV,py0*MeV,pz0*MeV);
 
-  // create & set vertex properties
-  G4PrimaryVertex* vertex = new G4PrimaryVertex(G4ThreeVector(x0*um,y0*um,z0*um),t0*1e-3*ps);
+  // pick a random macro-particle
+  G4int id = std::floor(G4UniformRand() * fInputReader->GetNumberOfMacroParticles());
+
+  // set macro-particle statistical weight
+  G4double w = fInputReader->GetMacroParticleWeight(id);
+  particle->SetWeight(w);
+
+  // set macro-particle momentum
+  G4ThreeVector p = fInputReader->GetMacroParticleMomentum(id);
+  particle->SetMomentum(p[0],p[1],p[2]);
+
+  // get macro-particle position and time
+  G4ThreeVector r = fInputReader->GetMacroParticlePosition(id);
+  G4double t = fInputReader->GetMacroParticleTime(id);
+
+  // set macro-particle position and time
+  G4PrimaryVertex* vertex = new G4PrimaryVertex(r,t);
   vertex->SetPrimary(particle);
 
   // generate the event
   anEvent->AddPrimaryVertex(vertex);
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Define UI commands.
-
-The primary particle type can be changed by using
-/input/setParticle particleName
-
-*/
-void PrimaryGeneratorAction::SetCommands()
-{
-  // get UI messenger
-  G4GenericMessenger* messenger = fInputReader->GetInMessenger();
-
-  // set commands
-  G4GenericMessenger::Command& setParticleNameCmd
-  = messenger->DeclareProperty("setParticle",
-                              fParticleName,
-                              "Change particle type");
-
-  // set commands properties
-  setParticleNameCmd.SetStates(G4State_Idle);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

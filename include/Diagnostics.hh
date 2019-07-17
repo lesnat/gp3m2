@@ -32,14 +32,18 @@
 #ifndef Diagnostics_h
 #define Diagnostics_h 1
 
-#include "Analysis.hh"
+// selection of the analysis manager output format
+// #include "g4root.hh"
+// #include "g4xml.hh"
+#include "g4csv.hh"
 
 class G4ParticleDefinition;
 class G4ParticleTable;
+class Units;
 
 #include "G4GenericMessenger.hh"
 #include "G4Cache.hh"
-#include "G4Step.hh"
+#include "G4StepPoint.hh"
 
 /**
 \brief Creates and writes diagnostic output files.
@@ -48,7 +52,7 @@ class G4ParticleTable;
 class Diagnostics
 {
   public:
-    Diagnostics();
+    Diagnostics(Units* units);
     ~Diagnostics();
 
     // user methods
@@ -62,13 +66,13 @@ class Diagnostics
     // void CreateDiagVolumeNeutronProduction();
 
     // methods to fill diagnostics
-    void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4Step* stepPoint);
-    // void FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
 
 
     // methods to write output file
@@ -85,17 +89,21 @@ class Diagnostics
     G4double GetHighEnergyLimit() {return fHighEnergyLimit;};
 
   private:
+    // Geant4 pointers
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
-    G4String fOutFileBaseName; /**< \brief Output file name.*/
     G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
-    G4double fLowEnergyLimit;
-    G4double fHighEnergyLimit;
+    G4ParticleTable* fParticleTable; /**< \brief Pointer to the G4ParticleTable instance.*/
 
-    //
-    G4bool fDiagSurfacePhaseSpaceActivation;
+    // User pointers
+    Units* fUnits; /**< \brief Pointer to the Units instance.*/
 
-    G4ParticleTable* fParticleTable;
-    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceCounter;
+    // User variables
+    G4String fOutputFileBaseName; /**< \brief Output file base name.*/
+    G4double fLowEnergyLimit; /**< \brief Lower energy to fill diagnostics.*/
+    G4double fHighEnergyLimit; /**< \brief Higher energy to fill diagnostics.*/
+    G4bool fDiagSurfacePhaseSpaceActivation;  /**< \brief .*/
+
+    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceCounter;  /**< \brief .*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

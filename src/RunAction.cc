@@ -34,6 +34,7 @@
 #include "G4RunManager.hh" // includes all the needed classes for RunAction
 #include "G4Run.hh"
 
+#include "Units.hh"
 #include "InputReader.hh"
 #include "Diagnostics.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -42,13 +43,14 @@
 \brief .
 
 */
-RunAction::RunAction()
+RunAction::RunAction(Units* units)
 : G4UserRunAction(),
+  fUnits(units),
   fInputReader(nullptr),
   fDiagnostics(nullptr)
 {
-  fInputReader = new InputReader();
-  fDiagnostics = new Diagnostics();
+  fInputReader = new InputReader(fUnits);
+  fDiagnostics = new Diagnostics(fUnits);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -89,7 +91,7 @@ This user code is executed at the end of each run
 */
 void RunAction::EndOfRunAction(const G4Run* /*run*/)
 {
-  // save Ntuples
+  // save diagnostics
   fDiagnostics->FinishAllDiags();
 }
 

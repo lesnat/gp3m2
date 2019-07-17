@@ -33,10 +33,9 @@
 #define PrimaryGeneratorAction_h 1
 
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "G4ParticleGun.hh"
 
 class G4ParticleTable;
-class RunAction;
+class InputReader;
 
 /**
 \brief Generate primary particles.
@@ -46,19 +45,20 @@ This class is instanciated in each worker thread.
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 {
   public:
-    PrimaryGeneratorAction(RunAction* masterRunAction);
+    PrimaryGeneratorAction(InputReader* inputReader);
     ~PrimaryGeneratorAction();
 
     // base class methods
     virtual void GeneratePrimaries(G4Event*);
 
-    // user methods
-    void SetCommands();
-
   private:
-    G4String fParticleName;
+    // Geant4 pointers
     G4ParticleTable* fParticleTable;
-    RunAction* fRunAction;
+
+    // User pointers
+    InputReader* fInputReader;
+    
+    // User variables
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

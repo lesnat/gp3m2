@@ -53,7 +53,12 @@ class SteppingAction : public G4UserSteppingAction
     virtual void UserSteppingAction(const G4Step*);
 
   private:
+    // Geant4 pointers
+
+    // User pointers
     Diagnostics* fDiagnostics; /**< \brief Pointer to the Diagnostics instance of the current thread.*/
+
+    // User variables
 };
 
 #endif

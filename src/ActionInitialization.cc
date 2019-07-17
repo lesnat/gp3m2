@@ -33,6 +33,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
 #include "SteppingAction.hh"
+#include "Units.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -40,8 +41,9 @@
 \brief
 
 */
-ActionInitialization::ActionInitialization()
-: G4VUserActionInitialization()
+ActionInitialization::ActionInitialization(Units* units)
+: G4VUserActionInitialization(),
+  fUnits(units)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -72,7 +74,7 @@ void ActionInitialization::BuildForMaster() const
 */
 void ActionInitialization::Build() const
 {
-  RunAction* runAction = new RunAction;
+  RunAction* runAction = new RunAction(fUnits);
   SetUserAction(runAction);
   SetUserAction(new PrimaryGeneratorAction(runAction->GetInputReader()));
   SetUserAction(new SteppingAction(runAction->GetDiagnostics()));

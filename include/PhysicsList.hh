@@ -59,8 +59,12 @@ class PhysicsList: public G4VModularPhysicsList
     void SetCommands();
 
   private:
+    // Geant4 pointers
     G4VPhysicsConstructor*  fPhysicsList; /**< \brief Pointer to the used pre-packaged PhysicsList.*/
     G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance.*/
+
+    // User pointers
+    // User variables
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
