@@ -29,7 +29,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 #include "PrimaryGeneratorAction.hh"
-#include "RunAction.hh"
+#include "InputReader.hh"
 
 #include "G4PrimaryParticle.hh"
 #include "G4PrimaryVertex.hh"
@@ -50,11 +50,11 @@
 \brief Instanciate G4ParticleGun and define default primary particles properties
 
 */
-PrimaryGeneratorAction::PrimaryGeneratorAction(RunAction* masterRunAction)
+PrimaryGeneratorAction::PrimaryGeneratorAction(InputReader* inputReader)
 : G4VUserPrimaryGeneratorAction(),
   fParticleName("geantino"),
   fParticleTable(0),
-  fRunAction(masterRunAction)
+  fInputReader(inputReader)
 {
   // get particle table instance
   fParticleTable = G4ParticleTable::GetParticleTable();
@@ -88,23 +88,23 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
   G4ParticleDefinition* particleDefinition = fParticleTable->FindParticle(fParticleName);
 
   // generate a random int corresponding to a line in the input file
-  G4int id = std::floor(G4UniformRand() * fRunAction->GetLength());
+  G4int id = std::floor(G4UniformRand() * fInputReader->GetLength());
 
   // get statistical weight
-  G4double w0 = fRunAction->GetEntry("w",id);
+  G4double w0 = fInputReader->GetEntry("w",id);
 
   // get position
-  G4double x0 = fRunAction->GetEntry("x",id);
-  G4double y0 = fRunAction->GetEntry("y",id);
-  G4double z0 = fRunAction->GetEntry("z",id);
+  G4double x0 = fInputReader->GetEntry("x",id);
+  G4double y0 = fInputReader->GetEntry("y",id);
+  G4double z0 = fInputReader->GetEntry("z",id);
 
   // get momentum
-  G4double px0 = fRunAction->GetEntry("px",id);
-  G4double py0 = fRunAction->GetEntry("py",id);
-  G4double pz0 = fRunAction->GetEntry("pz",id);
+  G4double px0 = fInputReader->GetEntry("px",id);
+  G4double py0 = fInputReader->GetEntry("py",id);
+  G4double pz0 = fInputReader->GetEntry("pz",id);
 
   // get initial time
-  G4double t0 = fRunAction->GetEntry("t",id);
+  G4double t0 = fInputReader->GetEntry("t",id);
 
   // create & set particle properties
   G4PrimaryParticle* particle = new G4PrimaryParticle(particleDefinition);
@@ -131,7 +131,7 @@ The primary particle type can be changed by using
 void PrimaryGeneratorAction::SetCommands()
 {
   // get UI messenger
-  G4GenericMessenger* messenger = fRunAction->GetInMessenger();
+  G4GenericMessenger* messenger = fInputReader->GetInMessenger();
 
   // set commands
   G4GenericMessenger::Command& setParticleNameCmd

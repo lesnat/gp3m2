@@ -74,8 +74,8 @@ void ActionInitialization::Build() const
 {
   RunAction* runAction = new RunAction;
   SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(runAction));
-  SetUserAction(new SteppingAction(runAction));
+  SetUserAction(new PrimaryGeneratorAction(runAction->GetInputReader()));
+  SetUserAction(new SteppingAction(runAction->GetDiagnostics()));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

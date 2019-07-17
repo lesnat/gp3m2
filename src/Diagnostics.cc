@@ -119,43 +119,55 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 // methods to fill diagnostics
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part,
-                              G4double weight,
-                              G4ThreeVector position,
-                              G4ThreeVector momentum,
-                              G4double time)
+void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4Step* stepPoint)
 {
   G4int currentNtupleID = fDiagSurfacePhaseSpaceCounter[part];
 
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,0,weight); // weight by event
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,1,position[0]/um);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,2,position[1]/um);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,3,position[2]/um);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,4,momentum[0]/MeV);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,5,momentum[1]/MeV);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,6,momentum[2]/MeV);
-  fAnalysisManager->FillNtupleDColumn(currentNtupleID,7,time/(1e-3*ps));
+  if (stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
+      stepPoint->GetKineticEnergy() > GetLowEnergyLimit() &&    // The particle's kinetic energy is higher than given threshold
+      stepPoint->GetKineticEnergy() < GetHighEnergyLimit())     // The particle's kinetic energy is lower than given threshold
+  {
+    G4double      weight    = stepPoint->GetWeight();
+    G4ThreeVector position  = stepPoint->GetPosition();
+    G4ThreeVector momentum  = stepPoint->GetMomentum();
+    G4double      time      = stepPoint->GetGlobalTime();
 
-  fAnalysisManager->AddNtupleRow(currentNtupleID);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,0,weight); // weight by event
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,1,position[0]/um);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,2,position[1]/um);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,3,position[2]/um);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,4,momentum[0]/MeV);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,5,momentum[1]/MeV);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,6,momentum[2]/MeV);
+    fAnalysisManager->FillNtupleDColumn(currentNtupleID,7,time/(1e-3*ps));
+
+    fAnalysisManager->AddNtupleRow(currentNtupleID);
+  }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfaceEnergySpectra() {}
+// void Diagnostics::FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfaceThetaSpectra() {}
+// void Diagnostics::FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfacePhiSpectra() {}
+// void Diagnostics::FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeEnergyDeposition() {}
+// void Diagnostics::FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeNuclearTransmutation() {}
+// void Diagnostics::FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeNeutronProduction() {}
+// void Diagnostics::FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4Step* stepPoint)
+// {}
 
 
 // methods to write output file

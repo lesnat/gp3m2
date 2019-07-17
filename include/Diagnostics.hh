@@ -39,6 +39,7 @@ class G4ParticleTable;
 
 #include "G4GenericMessenger.hh"
 #include "G4Cache.hh"
+#include "G4Step.hh"
 
 /**
 \brief Creates and writes diagnostic output files.
@@ -61,17 +62,13 @@ class Diagnostics
     // void CreateDiagVolumeNeutronProduction();
 
     // methods to fill diagnostics
-    void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part,
-                                  G4double weight,
-                                  G4ThreeVector position,
-                                  G4ThreeVector momentum,
-                                  G4double time);
-    // void FillDiagSurfaceEnergySpectra();
-    // void FillDiagSurfaceThetaSpectra();
-    // void FillDiagSurfacePhiSpectra();
-    // void FillDiagVolumeEnergyDeposition();
-    // void FillDiagVolumeNuclearTransmutation();
-    // void FillDiagVolumeNeutronProduction();
+    void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4Step* stepPoint);
+    // void FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4Step* stepPoint);
 
 
     // methods to write output file
@@ -80,11 +77,10 @@ class Diagnostics
     void SetCommands();
 
     // get/set methods
-    // methods to
+    // methods to retrieve diag activation
     G4bool GetDiagSurfacePhaseSpaceActivation() {return fDiagSurfacePhaseSpaceActivation;};
 
-    //
-    G4GenericMessenger* GetMessenger() {return fMessenger;};
+    // methods to retrieve low and high energy limits
     G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
     G4double GetHighEnergyLimit() {return fHighEnergyLimit;};
 
