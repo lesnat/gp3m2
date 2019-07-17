@@ -5,25 +5,40 @@
 #
 # Change the default number of workers (in multi-threading mode)
 /run/numberOfThreads 20
-#
+
+# Define simulation units
+/units/setPositionUnit um
+/units/setMomentumUnit MeV
+/units/setTimeUnit fs
+
 # Initialize kernel
 /run/initialize
-#
+
+# Define verbosities
 /control/verbose 1
 /run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
 /run/printProgress 50000
 
-/target/addLayer G4_Al 36000 # um
-#
-/input/setParticle e-
-/input/setFileName input_Al.dat
+# Build target
+/target/setRadius 10000
+/target/addLayer G4_Al 36000
 
-/output/setFileName Al
-/output/setLowEnergyLimit 145 keV
-
+# Define physics list
 /physics/setPhysicsList standard
 
+# Define input source
+/input/setFileName input_Al.dat
+/input/setParticle e-
+
+# Define diagnostics
+/diags/setFileBaseName Al
+/diags/setLowEnergyLimit 145 keV
+/diags/createDiagSurfacePhaseSpace gamma
+
+# Set cuts
 /run/setCut 1 mm
-/run/beamOn 5000000
+
+# Launch particles
+/run/beamOn 10000000

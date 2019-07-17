@@ -74,6 +74,6 @@ plt.gca().add_artist(plt.legend(
             ("Faddegon 1991","gp3m2"),
             loc=1))
 
-plt.show()
+plt.pause(.001)
 
 input("Waiting ...")
