@@ -33,6 +33,7 @@
 #include "DetectorConstruction.hh"
 
 #include "G4NistManager.hh"
+#include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
@@ -84,19 +85,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
   // Get nist material manager
   G4NistManager* nist = G4NistManager::Instance();
 
-  // // Define World default properties
-  // G4double worldRadius  = 1*m;
-  // G4double worldSizeLongi  = 1*m;
-  // G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
-  //
-  // // Create World solid
-  // G4Tubs* worldS =
-  //     new G4Tubs("WorldS",                    // name
-  //             0.,                             // inner radius
-  //             worldRadius,                    // outer radius
-  //             worldSizeLongi,                 // z-half length
-  //             0.,                             // starting Phi
-  //             twopi);                         // segment angle
   // Define World default properties
   G4double worldXYZ  = 1*m;
   G4Material* worldMat = nist->FindOrBuildMaterial("G4_Galactic");
@@ -151,12 +139,7 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
   } else {
     G4cerr << "Unknown propagation axis : " << fPropagationAxis << G4endl;
     throw;
-  // }
-  //
-  // // Update world size and orientation
-  // G4bool worldRadiusToTargetRadiusRatio = 1.0;
-  // fWorldLV->GetSolid()->SetOuterRadius(worldRadiusToTargetRadiusRatio * fTargetRadius);
-  // fWorldLV->GetSolid()->SetZHalfLength(1.1*(fTargetSizeLongi + width));
+  }
 
   // Create layer solid volume
   G4Tubs* layerS =
@@ -216,13 +199,13 @@ void DetectorConstruction::SetCommands()
     = fMessenger->DeclareMethod("setRadius",
                                 &DetectorConstruction::SetTargetRadius,
                                 "Set target radius");
-  G4GenericMessenger::Command& setPropagagationAxisCmd
+  G4GenericMessenger::Command& setPropagationAxisCmd
     = fMessenger->DeclareMethod("setPropagationAxis",
                                 &DetectorConstruction::SetPropagationAxis,
                                 "Make the targer layers being oriented along the propagation axis");
   // set commands properties
   setTargetRadiusCmd.SetStates(G4State_Idle);
-  SetPropagationAxisCmd.SetStates(G4State_Idle);
+  setPropagationAxisCmd.SetStates(G4State_Idle);
   addLayerCmd.SetStates(G4State_Idle);
 
 }

@@ -21,6 +21,9 @@
 /tracking/verbose 0
 /run/printProgress 10000
 
+# Define propagation axis
+/target/setPropagationAxis x
+
 # Build target
 /target/addLayer G4_Galactic 50
 

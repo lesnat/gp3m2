@@ -21,6 +21,9 @@
 /tracking/verbose 0
 /run/printProgress 50000
 
+# Define propagation axis
+/target/setPropagationAxis x
+
 # Build target
 /target/setRadius 36000
 /target/addLayer G4_Al 36000

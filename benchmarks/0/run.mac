@@ -20,6 +20,9 @@
 /event/verbose 0
 /tracking/verbose 0
 
+# Define propagation axis
+/target/setPropagationAxis x
+
 # Build target
 /target/addLayer G4_Galactic 50
 
