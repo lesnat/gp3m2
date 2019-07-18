@@ -56,6 +56,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // get/set methods methods
     void SetTargetRadius(G4double targetRadius) {fTargetRadius = targetRadius * fUnits->GetPositionUnitValue();};
+    void SetPropagationAxis(G4String axis) {fPropagationAxis = axis;};
     void SetCommands();
 
   private:
@@ -68,7 +69,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // User variables
     G4int fNumberOfLayers; /**< \brief Total number of layers in the target.*/
-    G4double fTargetSizeX; /**< \brief Total target longitudinal size.*/
+    G4String fPropagationAxis; /**< \brief Particles propagation axis.*/
+    G4double fTargetSizeLongi; /**< \brief Total target longitudinal size.*/
     G4double fTargetRadius; /**< \brief Target transverse size.*/
     G4bool fCheckOverlaps; /**< \brief Check if volumes are overlapping.*/
 };

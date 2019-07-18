@@ -22,7 +22,7 @@
 /run/printProgress 50000
 
 # Build target
-/target/setRadius 10000
+/target/setRadius 36000
 /target/addLayer G4_Al 36000
 
 # Define physics list
@@ -41,4 +41,4 @@
 /run/setCut 1 mm
 
 # Launch particles
-/run/beamOn 10000000
+/run/beamOn 5000000
