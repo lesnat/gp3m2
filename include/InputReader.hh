@@ -36,6 +36,7 @@ class G4GenericMessenger;
 class Units;
 #include "globals.hh"
 #include "G4ThreeVector.hh"
+#include <vector>
 
 /**
 \brief Read input file and interact with input macro-particles.

@@ -57,7 +57,7 @@ class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
 
     // User pointers
     InputReader* fInputReader;
-    
+
     // User variables
 };
 

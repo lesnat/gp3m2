@@ -33,7 +33,6 @@
 #define RunAction_h 1
 
 #include "G4UserRunAction.hh"
-#include "Analysis.hh"
 #include "G4ThreeVector.hh"
 
 class G4Run;
