@@ -230,8 +230,8 @@ void Diagnostics::SetCommands()
 
   // define commands
   G4GenericMessenger::Command& setOutputFileBaseNameCmd
-    = fMessenger->DeclareProperty("setFileBaseName",
-                                fOutputFileBaseName,
+    = fMessenger->DeclareMethod("setFileBaseName",
+                                &Diagnostics::SetOutputFileBaseName,
                                 "Change output file name");
 
   G4GenericMessenger::Command& setLowEnergyLimitCmd

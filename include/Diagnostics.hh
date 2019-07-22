@@ -83,6 +83,7 @@ class Diagnostics
     // get/set methods
     // methods to retrieve diag activation
     G4bool GetDiagSurfacePhaseSpaceActivation() {return fDiagSurfacePhaseSpaceActivation;};
+    void SetOutputFileBaseName(G4String outputFileBaseName) {fOutputFileBaseName = outputFileBaseName;};
 
     // methods to retrieve low and high energy limits
     G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
