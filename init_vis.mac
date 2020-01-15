@@ -18,6 +18,8 @@
 # Initialize kernel
 /run/initialize
 #
+# Define propagation axis
+/target/setPropagationAxis x
 # /target/addLayer G4_Al 5000
 # /target/addLayer G4_W 5000
 # /target/addLayer G4_Fe 5000
