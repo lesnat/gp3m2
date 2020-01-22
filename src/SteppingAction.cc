@@ -73,11 +73,7 @@ void SteppingAction::UserSteppingAction(const G4Step* aStep)
   G4Track* aTrack = aStep->GetTrack();
   const G4ParticleDefinition* particle = aTrack->GetDynamicParticle()->GetDefinition();
 
-  // Fill diagnostics
-  if (fDiagnostics->GetDiagSurfacePhaseSpaceActivation())
-  {
-    // fDiagnostics->FillDiagSurfacePhaseSpace(particle, postStepPoint);
-    fDiagnostics->FillDiagSurfacePhaseSpace(particle, preStepPoint);
-  }
+  // Fill diagnostics if they are activated
+  fDiagnostics->FillDiagSurfacePhaseSpace(particle, preStepPoint);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

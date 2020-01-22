@@ -35,6 +35,7 @@
 #include "G4GenericMessenger.hh"
 #include "G4ParticleTable.hh"
 
+#include "G4VProcess.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
 \brief Retrieve analysis manager instance, initialize diagnostics numbers and call SetCommands.
@@ -46,9 +47,7 @@ Diagnostics::Diagnostics(Units* units)
   fParticleTable(nullptr),
   fUnits(units),
   fOutputFileBaseName("results"),
-  fLowEnergyLimit(0.),
-  fHighEnergyLimit(10000000000),
-  fDiagSurfacePhaseSpaceActivation(false)
+  fLowEnergyLimit(0.)
 {
   fParticleTable = G4ParticleTable::GetParticleTable();
 
@@ -91,16 +90,13 @@ void Diagnostics::InitializeAllDiags()
 \brief Create a diagnostic that export the particle phase space.
 
 The diagnostic is activated, and the correspondance between the given particle
-and its Ntuple id is stored in the fDiagSurfacePhaseSpaceCounter map.
+and its Ntuple id is stored in the fDiagSurfacePhaseSpaceMap map.
 
 */
 void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 {
-  // activate surface phase space diagnostic
-  fDiagSurfacePhaseSpaceActivation = true;
-
   // create Ntuples
-  G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter.Size();
+  G4int currentNtupleId = fDiagSurfacePhaseSpaceMap.Size();
 
   fAnalysisManager->CreateNtuple(particle , particle + " phase space");
 
@@ -116,25 +112,34 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
   fAnalysisManager->FinishNtuple(currentNtupleId);
 
   // save correspondance between particle and Ntuple ID
-  fDiagSurfacePhaseSpaceCounter[fParticleTable->FindParticle(particle)] = currentNtupleId;
+  fDiagSurfacePhaseSpaceMap[fParticleTable->FindParticle(particle)] = currentNtupleId;
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagSurfaceEnergySpectra() {}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagSurfaceThetaSpectra() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagSurfacePhiSpectra() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagVolumeEnergyDeposition() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagVolumeNuclearTransmutation() {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagVolumeNeutronProduction() {}
+// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// void Diagnostics::CreateDiagVolumeEnergyDeposition(G4String particle)
+// {
+//   //
+// }
+//
+// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// void Diagnostics::CreateDiagVolumeProcess(const G4String process)
+// {
+//   // create Ntuples
+//   G4int currentNtupleId = fDiagVolumeProcessMap.Size();
+//
+//   fAnalysisManager->CreateNtuple(process , process + " location");
+//
+//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
+//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
+//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
+//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
+//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
+//
+//   fAnalysisManager->FinishNtuple(currentNtupleId);
+//
+//   // save correspondance between particle and Ntuple ID
+//   fDiagVolumeProcessMap[process] = currentNtupleId;
+// }
 
 // methods to fill diagnostics
 
@@ -145,12 +150,13 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 */
 void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
 {
-  G4int currentNtupleId = fDiagSurfacePhaseSpaceCounter[part];
-
-  if (stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
-      stepPoint->GetKineticEnergy() > GetLowEnergyLimit() &&    // The particle's kinetic energy is higher than given threshold
-      stepPoint->GetKineticEnergy() < GetHighEnergyLimit())     // The particle's kinetic energy is lower than given threshold
+  if (fDiagSurfacePhaseSpaceMap.Has(part) &&                    // The diag has been activated for this particle
+      stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
+      stepPoint->GetKineticEnergy() > GetLowEnergyLimit())      // The particle's kinetic energy is higher than given threshold
   {
+    // Get corresponding diag id
+    G4int currentNtupleId = fDiagSurfacePhaseSpaceMap[part];
+
     // Get simulation units
     G4double rUnit = fUnits->GetPositionUnitValue();
     G4double pUnit = fUnits->GetMomentumUnitValue();
@@ -176,25 +182,45 @@ void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, co
   }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
+// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// void Diagnostics::FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
+// {
+//   //
+// }
+//
+// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+// void Diagnostics::FillDiagVolumeProcess(const G4String process, const G4StepPoint* stepPoint)
+// {
+//   G4int stepStatus = stepPoint->GetStepStatus();
+//
+//   if (fDiagVolumeProcessMap.Has(process) &&                     // The diag has been activated for this process
+//       (stepStatus == fAlongStepDoItProc ||                      // The particle's kinetic energy is higher than given threshold
+//       stepStatus == fPostStepDoItProc ||                        // The particle's kinetic energy is higher than given threshold
+//       stepStatus == fExclusivelyForcedProc) &&                  // The particle's kinetic energy is higher than given threshold
+//       stepPoint->GetProcessDefinedStep()->GetProcessName() == process)// The step is limited by the right process
+//   {
+//     // Get corresponding diag id
+//     G4int currentNtupleId = fDiagVolumeProcessMap[process];
+//
+//     // Get simulation units
+//     G4double rUnit = fUnits->GetPositionUnitValue();
+//     G4double tUnit = fUnits->GetTimeUnitValue();
+//
+//     // Get the particle properties
+//     G4double      w   = stepPoint->GetWeight();
+//     G4ThreeVector r   = stepPoint->GetPosition();
+//     G4double      t   = stepPoint->GetGlobalTime();
+//
+//     // Fill the Ntuple
+//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,0,w); // weight by event
+//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,1,r[0]/rUnit);
+//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,2,r[1]/rUnit);
+//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,3,r[2]/rUnit);
+//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,7,t/tUnit);
+//
+//     fAnalysisManager->AddNtupleRow(currentNtupleId);
+//   }
+// }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 // void Diagnostics::FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4Step* stepPoint)
@@ -218,9 +244,11 @@ void Diagnostics::FinishAllDiags()
 
 The input file name can be changed by using
 /diags/setFileBaseName baseName
+...
 /diags/setLowEnergyLimit value unit
-/diags/setHighEnergyLimit value unit
 /diags/createDiagSurfacePhaseSpace particleName
+/diags/createDiagVolumeEnergyDeposition particleName
+/diags/createDiagVolumeProcess processName
 
 */
 void Diagnostics::SetCommands()
@@ -235,36 +263,29 @@ void Diagnostics::SetCommands()
                                 "Change output file name");
 
   G4GenericMessenger::Command& setLowEnergyLimitCmd
-    = fMessenger->DeclarePropertyWithUnit("setLowEnergyLimit",
-                                "MeV",
-                                fLowEnergyLimit,
-                                "Change low energy limit");
-
-  G4GenericMessenger::Command& setHighEnergyLimitCmd
-    = fMessenger->DeclarePropertyWithUnit("setHighEnergyLimit",
-                                "MeV",
-                                fHighEnergyLimit,
+    = fMessenger->DeclareMethod("setLowEnergyLimit",
+                                &Diagnostics::SetLowEnergyLimit,
                                 "Change low energy limit");
 
   G4GenericMessenger::Command& createDiagSurfacePhaseSpaceCmd
     = fMessenger->DeclareMethod("createDiagSurfacePhaseSpace",
                                 &Diagnostics::CreateDiagSurfacePhaseSpace,
-                                "Add a new layer to the target");
+                                "Activate phase space export at target interfaces, for given particle");
+
+  // G4GenericMessenger::Command& createDiagVolumeEnergyDepositionCmd
+  //   = fMessenger->DeclareMethod("createDiagVolumeEnergyDeposition",
+  //                               &Diagnostics::CreateDiagVolumeEnergyDeposition,
+  //                               "Activate energy deposition in target volume, for given particle");
+  //
+  // G4GenericMessenger::Command& createDiagVolumeProcessCmd
+  //   = fMessenger->DeclareMethod("createDiagVolumeProcess",
+  //                               &Diagnostics::CreateDiagVolumeProcess,
+  //                               "Activate process export in target volume, for given process");
 
   // set commands properties
   setOutputFileBaseNameCmd.SetStates(G4State_Idle);
-
   setLowEnergyLimitCmd.SetStates(G4State_Idle);
-  setLowEnergyLimitCmd.SetParameterName("lowE", true);
-  setLowEnergyLimitCmd.SetRange("lowE>=0.");
-  setLowEnergyLimitCmd.SetDefaultValue("0.");
-  // setLowEnergyLimitCmd.SetUnitCategory("Energy");
-
-  setHighEnergyLimitCmd.SetStates(G4State_Idle);
-  setHighEnergyLimitCmd.SetParameterName("lowE", true);
-  setHighEnergyLimitCmd.SetRange("lowE>=0.");
-  setHighEnergyLimitCmd.SetDefaultValue("1e10");
-  // setHighEnergyLimitCmd.SetUnitCategory("Energy");
-
   createDiagSurfacePhaseSpaceCmd.SetStates(G4State_Idle);
+  // createDiagVolumeEnergyDepositionCmd.SetStates(G4State_Idle);
+  // createDiagVolumeProcessCmd.SetStates(G4State_Idle);
 }

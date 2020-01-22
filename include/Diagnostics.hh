@@ -58,21 +58,13 @@ class Diagnostics
     // user methods
     // methods to create diagnostics
     void CreateDiagSurfacePhaseSpace(G4String particle);
-    // void CreateDiagSurfaceEnergySpectra();
-    // void CreateDiagSurfaceThetaSpectra();
-    // void CreateDiagSurfacePhiSpectra();
-    // void CreateDiagVolumeEnergyDeposition();
-    // void CreateDiagVolumeNuclearTransmutation();
-    // void CreateDiagVolumeNeutronProduction();
+    // void CreateDiagVolumeEnergyDeposition(G4String particle);
+    // void CreateDiagVolumeProcess(const G4String process);
 
     // methods to fill diagnostics
     void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagSurfaceEnergySpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagSurfaceThetaSpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagSurfacePhiSpectra(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
     // void FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagVolumeNuclearTransmutation(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+    // void FillDiagVolumeProcess(const G4String process, const G4StepPoint* stepPoint);
 
 
     // methods to write output file
@@ -82,12 +74,11 @@ class Diagnostics
 
     // get/set methods
     // methods to retrieve diag activation
-    G4bool GetDiagSurfacePhaseSpaceActivation() {return fDiagSurfacePhaseSpaceActivation;};
     void SetOutputFileBaseName(G4String outputFileBaseName) {fOutputFileBaseName = outputFileBaseName;};
 
     // methods to retrieve low and high energy limits
     G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
-    G4double GetHighEnergyLimit() {return fHighEnergyLimit;};
+    void SetLowEnergyLimit(G4double lowEnergyLimit) {fLowEnergyLimit = lowEnergyLimit;};
 
   private:
     // Geant4 pointers
@@ -101,10 +92,10 @@ class Diagnostics
     // User variables
     G4String fOutputFileBaseName; /**< \brief Output file base name.*/
     G4double fLowEnergyLimit; /**< \brief Lower energy to fill diagnostics.*/
-    G4double fHighEnergyLimit; /**< \brief Higher energy to fill diagnostics.*/
-    G4bool fDiagSurfacePhaseSpaceActivation;  /**< \brief .*/
 
-    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceCounter;  /**< \brief .*/
+    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
+    // G4MapCache <const G4ParticleDefinition*, G4int> fDiagVolumeEnergyDepositionMap;  /**< \brief .*/
+    // G4MapCache <const G4String, G4int> fDiagVolumeProcessMap;  /**< \brief .*/
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
