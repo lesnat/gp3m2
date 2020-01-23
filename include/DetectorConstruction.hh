@@ -56,7 +56,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // get/set methods methods
     void SetTargetRadius(G4double targetRadius) {fTargetRadius = targetRadius * fUnits->GetPositionUnitValue();};
-    void SetPropagationAxis(G4String axis) {fPropagationAxis = axis;};
+    void SetPropagationAxis(G4String axis) {
+      if (axis == "x" || axis == "y" || axis == "z") {
+        fPropagationAxis = axis;
+      } else {
+        G4cerr << "Unknown propagation axis : " << fPropagationAxis << G4endl;
+        throw;}
+      }
+
     void SetCommands();
 
   private:

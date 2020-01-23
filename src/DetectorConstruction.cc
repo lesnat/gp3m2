@@ -125,6 +125,13 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
   G4NistManager* nist = G4NistManager::Instance();
   G4Material* layerMat = nist->FindOrBuildMaterial(materialName);
 
+  // Test if the material was properly constructed
+  if (layerMat == nullptr)
+  {
+    G4cerr << "Unknown material : " << materialName << G4endl;
+    throw;
+  }
+
   // Get layer longitudinal size;
   G4double width = targetWidth * fUnits->GetPositionUnitValue();
 
@@ -136,9 +143,6 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
     rotation->rotateX(90. * deg);
   } else if (fPropagationAxis == "z") {
     ; // Cylinder is already oriented along the z axis
-  } else {
-    G4cerr << "Unknown propagation axis : " << fPropagationAxis << G4endl;
-    throw;
   }
 
   // Create layer solid volume
