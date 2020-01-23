@@ -66,14 +66,14 @@ This virtual method is called at each Step ends.
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
   // Get step points
-  // G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
-  G4StepPoint* preStepPoint = aStep->GetPreStepPoint();
+  // G4StepPoint* stepPoint = aStep->GetPostStepPoint();
+  G4StepPoint* stepPoint = aStep->GetPreStepPoint();
 
   // Retrieve particle type
   G4Track* aTrack = aStep->GetTrack();
   const G4ParticleDefinition* particle = aTrack->GetDynamicParticle()->GetDefinition();
 
   // Fill diagnostics if they are activated
-  fDiagnostics->FillDiagSurfacePhaseSpace(particle, preStepPoint);
+  fDiagnostics->FillDiagSurfacePhaseSpace(particle, stepPoint);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

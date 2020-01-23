@@ -95,24 +95,31 @@ and its Ntuple id is stored in the fDiagSurfacePhaseSpaceMap map.
 */
 void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 {
-  // create Ntuples
-  G4int currentNtupleId = fDiagSurfacePhaseSpaceMap.Size();
+  // Test if the particle exists
+  if (fParticleTable->contains(particle)) {
 
-  fAnalysisManager->CreateNtuple(particle , particle + " phase space");
+    // create Ntuples
+    G4int currentNtupleId = fDiagSurfacePhaseSpaceMap.Size();
 
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "px ["+fUnits->GetMomentumUnitLabel()+"/c]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "py ["+fUnits->GetMomentumUnitLabel()+"/c]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "pz ["+fUnits->GetMomentumUnitLabel()+"/c]");
-  fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
+    fAnalysisManager->CreateNtuple(particle , particle + " phase space");
 
-  fAnalysisManager->FinishNtuple(currentNtupleId);
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "px ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "py ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "pz ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
 
-  // save correspondance between particle and Ntuple ID
-  fDiagSurfacePhaseSpaceMap[fParticleTable->FindParticle(particle)] = currentNtupleId;
+    fAnalysisManager->FinishNtuple(currentNtupleId);
+
+    // save correspondance between particle and Ntuple ID
+    fDiagSurfacePhaseSpaceMap.Insert(fParticleTable->FindParticle(particle), currentNtupleId);
+  } else {
+    G4cerr << "Unknown particle : " << particle << G4endl;
+    throw;
+  }
 }
 
 // //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -150,6 +157,7 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 */
 void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
 {
+  // Test for filling the diag
   if (fDiagSurfacePhaseSpaceMap.Has(part) &&                    // The diag has been activated for this particle
       stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
       stepPoint->GetKineticEnergy() > GetLowEnergyLimit())      // The particle's kinetic energy is higher than given threshold
@@ -262,10 +270,13 @@ void Diagnostics::SetCommands()
                                 &Diagnostics::SetOutputFileBaseName,
                                 "Change output file name");
 
+
   G4GenericMessenger::Command& setLowEnergyLimitCmd
-    = fMessenger->DeclareMethod("setLowEnergyLimit",
-                                &Diagnostics::SetLowEnergyLimit,
+    = fMessenger->DeclarePropertyWithUnit("setLowEnergyLimit",
+                                "MeV",
+                                fLowEnergyLimit,
                                 "Change low energy limit");
+
 
   G4GenericMessenger::Command& createDiagSurfacePhaseSpaceCmd
     = fMessenger->DeclareMethod("createDiagSurfacePhaseSpace",
@@ -284,7 +295,13 @@ void Diagnostics::SetCommands()
 
   // set commands properties
   setOutputFileBaseNameCmd.SetStates(G4State_Idle);
+
   setLowEnergyLimitCmd.SetStates(G4State_Idle);
+  setLowEnergyLimitCmd.SetParameterName("lowE", true);
+  setLowEnergyLimitCmd.SetRange("lowE>=0.");
+  setLowEnergyLimitCmd.SetDefaultValue("0.");
+  // setLowEnergyLimitCmd.SetUnitCategory("Energy");
+
   createDiagSurfacePhaseSpaceCmd.SetStates(G4State_Idle);
   // createDiagVolumeEnergyDepositionCmd.SetStates(G4State_Idle);
   // createDiagVolumeProcessCmd.SetStates(G4State_Idle);

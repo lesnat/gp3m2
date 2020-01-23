@@ -78,7 +78,6 @@ class Diagnostics
 
     // methods to retrieve low and high energy limits
     G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
-    void SetLowEnergyLimit(G4double lowEnergyLimit) {fLowEnergyLimit = lowEnergyLimit;};
 
   private:
     // Geant4 pointers
@@ -94,6 +93,8 @@ class Diagnostics
     G4double fLowEnergyLimit; /**< \brief Lower energy to fill diagnostics.*/
 
     G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
+    // std::map<const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
+    // std::map<const G4String, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
     // G4MapCache <const G4ParticleDefinition*, G4int> fDiagVolumeEnergyDepositionMap;  /**< \brief .*/
     // G4MapCache <const G4String, G4int> fDiagVolumeProcessMap;  /**< \brief .*/
 };
