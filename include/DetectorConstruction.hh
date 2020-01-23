@@ -33,6 +33,7 @@
 #define DetectorConstruction_h 1
 
 #include "G4VUserDetectorConstruction.hh"
+#include "globals.hh"
 
 class G4GenericMessenger;
 class Units;
@@ -56,13 +57,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     // get/set methods methods
     void SetTargetRadius(G4double targetRadius) {fTargetRadius = targetRadius * fUnits->GetPositionUnitValue();};
+
     void SetPropagationAxis(G4String axis) {
-      if (axis == "x" || axis == "y" || axis == "z") {
+      if (axis=="x"||axis=="y"||axis=="z") {
         fPropagationAxis = axis;
-      } else {
-        G4cerr << "Unknown propagation axis : " << fPropagationAxis << G4endl;
-        throw;}
+      } else {
+        G4cerr << "Unknown propagation axis : " << axis << G4endl;
       }
+    }
 
     void SetCommands();
 

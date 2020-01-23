@@ -77,6 +77,7 @@ with separators being spaces.
 */
 void InputReader::ReadInputFile()
 {
+
   // Clear fW,fX,... before import
   fW.clear()    ;
   fX.clear()    ; fY.clear()  ; fZ.clear();

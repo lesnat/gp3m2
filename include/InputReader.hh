@@ -36,7 +36,9 @@ class G4GenericMessenger;
 class Units;
 #include "globals.hh"
 #include "G4ThreeVector.hh"
+#include "G4ParticleTable.hh"
 #include <vector>
+#include <fstream>
 
 /**
 \brief Read input file and interact with input macro-particles.
@@ -62,8 +64,32 @@ class InputReader
 
     G4String GetParticleName() {return fParticleName;};
 
-    void SetInputFileName(G4String inputFileName) {fInputFileName = inputFileName;};
-    void SetParticleName(G4String particleName) {fParticleName = particleName;};
+    void SetInputFileName(G4String inputFileName) {
+      // Define streams
+      std::ifstream input;
+      input.open(inputFileName);
+
+      // Test if the input file exists
+      if ((bool)input) {
+        fInputFileName = inputFileName;
+      } else {
+        G4cerr << "Input file " << fInputFileName << " not found ..." << G4endl;
+        throw;
+      }
+    }
+
+    void SetParticleName(G4String particleName) {
+      // Retrieve particle table
+      G4ParticleTable* table = G4ParticleTable::GetParticleTable();
+
+      // Test if the table contains given input particle
+      if (table->contains(particleName)) {
+        fParticleName = particleName;
+      } else {
+        G4cerr << "Unknown primary particle : " << particleName << G4endl;
+        throw;
+      }
+    }
 
     void SetCommands();
 
