@@ -61,18 +61,7 @@ int main(int argc,char** argv)
 
   // launch the app with the choosen mode
   G4String mode = argv[1];
-  if (mode=="-i" or argc==1)         // interactive mode (default)
-  {
-    // initialize interactive session
-    UImanager->ApplyCommand("/control/execute init.mac");
-
-    // start interactive session
-    // G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-    G4UIExecutive* ui = new G4UIExecutive(1, &argv[0]);
-    ui->SessionStart();
-    delete ui;
-  }
-  else if (mode=="-v")               // visualization mode
+  if (mode=="-v" or argc==1)               // visualization mode (default)
   {
     // initialize interactive session and visualization
     G4VisManager* visManager = new G4VisExecutive;
@@ -102,7 +91,7 @@ int main(int argc,char** argv)
     G4cerr << " gp3m2 -m macro  :"
            << " launch the macro file `macro`" << G4endl;
     G4cerr << G4endl;
-    
+
     // return error code
     return 1;
   }
