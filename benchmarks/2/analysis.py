@@ -16,7 +16,7 @@ try:
     import p2sat
 except ImportError:
     import sys
-    sys.path.append("../../../Modules/p2sat/")
+    sys.path.append("/mnt/local/esnault/Modules/p2sat/")
     import p2sat
 
 # Get experimental results
@@ -30,9 +30,9 @@ A0 = 0.4 # deg
 angle = [0,10,30,60]
 
 # Get simulation results
-gps = p2sat.PhaseSpace(particle="gamma")
-gps.load.gp3m2_csv("./","Al")
-gps.data.round_axis("x")
+gps = p2sat.datasets.PhaseSpace(specie="gamma", unit_system="UHI")
+gps.load.gp3m2_csv("Al")
+# gps.edit.round_axis("x")
 
 # Plot spectra (number/MeV/sr/incident e-) for each angle
 for a in angle:
@@ -40,10 +40,10 @@ for a in angle:
     omega_min = 2*np.pi * (1 - np.cos(np.radians(max(a-A0,0)))) # the minimum theta angle is 0
     omega_max = 2*np.pi * (1 - np.cos(np.radians(a+A0)))
     domega=omega_max-omega_min
-    select=dict(omega=[omega_min,omega_max],x=36000)
+    select=dict(omegax=[omega_min,omega_max],x=36000)
 
     # Get the desired spectra
-    E_sim, S_sim = gps.hist.h1('ekin',bwidth=.1,select=select)
+    E_sim, S_sim = p2sat.hist.hist1d(gps, 'ekin',bwidth=.1,select=select)
 
     # Assuming an isotropical beam on phi, we can rescale the selection on a ring to a "square" of edge A0 modeling the detector
     if a>0: # This operation is basically useless but remain here for clarity
