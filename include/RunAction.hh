@@ -49,7 +49,7 @@ class Diagnostics;
 class RunAction : public G4UserRunAction
 {
   public:
-    RunAction(Units* units);
+    RunAction(Units* units, InputReader* inputReader, Diagnostics* diagnostics);
     ~RunAction();
 
     // base class methods

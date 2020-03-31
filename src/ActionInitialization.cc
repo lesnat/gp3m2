@@ -34,6 +34,8 @@
 #include "RunAction.hh"
 #include "SteppingAction.hh"
 #include "Units.hh"
+#include "InputReader.hh"
+#include "Diagnostics.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -74,10 +76,11 @@ void ActionInitialization::BuildForMaster() const
 */
 void ActionInitialization::Build() const
 {
-  RunAction* runAction = new RunAction(fUnits);
-  SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(runAction->GetInputReader()));
-  SetUserAction(new SteppingAction(runAction->GetDiagnostics()));
+  InputReader* inputReader = new InputReader(fUnits);
+  Diagnostics* diagnostics = new Diagnostics(fUnits);
+  SetUserAction(new RunAction(fUnits, inputReader, diagnostics));
+  SetUserAction(new PrimaryGeneratorAction(inputReader));
+  SetUserAction(new SteppingAction(diagnostics));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -43,15 +43,12 @@
 \brief .
 
 */
-RunAction::RunAction(Units* units)
+RunAction::RunAction(Units* units, InputReader* inputReader, Diagnostics* diagnostics)
 : G4UserRunAction(),
   fUnits(units),
-  fInputReader(nullptr),
-  fDiagnostics(nullptr)
-{
-  fInputReader = new InputReader(fUnits);
-  fDiagnostics = new Diagnostics(fUnits);
-}
+  fInputReader(inputReader),
+  fDiagnostics(diagnostics)
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
