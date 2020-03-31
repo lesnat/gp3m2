@@ -112,11 +112,7 @@ void PhysicsList::SetCuts()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PhysicsList::SetPhysicsList(G4String name)
 {
-  if (name == "simple")
-  {
-    //fPhysicsList = new PhysicsListSimple();
-  }
-  else if (name == "penelope")
+  if (name == "penelope")
   {
     fPhysicsList = new G4EmPenelopePhysics();
   }
