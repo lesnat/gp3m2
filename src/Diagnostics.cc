@@ -36,6 +36,10 @@
 #include "G4ParticleTable.hh"
 
 #include "G4VProcess.hh"
+
+#include "G4Electron.hh"
+#include "G4Gamma.hh"
+#include "G4Positron.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
 \brief Retrieve analysis manager instance, initialize diagnostics numbers and call SetCommands.
@@ -45,9 +49,13 @@ Diagnostics::Diagnostics(Units* units)
 : fAnalysisManager(nullptr),
   fMessenger(nullptr),
   fParticleTable(nullptr),
+  fElectron(nullptr),
+  fGamma(nullptr),
+  fPositron(nullptr),
   fUnits(units),
   fOutputFileBaseName("results"),
-  fLowEnergyLimit(0.)
+  fLowEnergyLimit(0.),
+  fDiagSurfacePhaseSpaceActivation(false)
 {
   fParticleTable = G4ParticleTable::GetParticleTable();
 
@@ -57,9 +65,10 @@ Diagnostics::Diagnostics(Units* units)
   G4cout << "Using " << fAnalysisManager->GetType()
          << " analysis manager" << G4endl;
 
-  fAnalysisManager->SetFirstNtupleId(0);
-  fAnalysisManager->SetFirstNtupleColumnId(0);
-  // fAnalysisManager->SetNtupleMerging(true);
+  // get particles definition
+  fElectron = G4Electron::Electron();
+  fGamma    = G4Gamma::Gamma();
+  fPositron = G4Positron::Positron();
 
   SetCommands();
 }
@@ -83,6 +92,13 @@ void Diagnostics::InitializeAllDiags()
 {
   // open output file
   fAnalysisManager->OpenFile(fOutputFileBaseName);
+
+  fAnalysisManager->SetFirstNtupleId(0);
+  fAnalysisManager->SetFirstNtupleColumnId(0);
+  // fAnalysisManager->SetNtupleMerging(true);
+
+  CreateDiagSurfacePhaseSpace();
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -93,60 +109,27 @@ The diagnostic is activated, and the correspondance between the given particle
 and its Ntuple id is stored in the fDiagSurfacePhaseSpaceMap map.
 
 */
-void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
+void Diagnostics::CreateDiagSurfacePhaseSpace()
 {
-  // Test if the particle exists
-  if (fParticleTable->contains(particle)) {
+  // create Ntuples
+  fAnalysisManager->CreateNtuple("electron"   ,"Electron phase space");     // ID=0
+  fAnalysisManager->CreateNtuple("gamma"      ,"Gamma phase space");        // ID=1
+  fAnalysisManager->CreateNtuple("positron"   ,"Positron phase space");     // ID=3
 
-    // create Ntuples
-    G4int currentNtupleId = fDiagSurfacePhaseSpaceMap.Size();
+  for (int i=0; i<3; i++) // loop over 3 Ntuples
+  {
+    fAnalysisManager->CreateNtupleDColumn(i, "Weight");
+    fAnalysisManager->CreateNtupleDColumn(i, "x ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(i, "y ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(i, "z ["+fUnits->GetPositionUnitLabel()+"]");
+    fAnalysisManager->CreateNtupleDColumn(i, "px ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(i, "py ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(i, "pz ["+fUnits->GetMomentumUnitLabel()+"/c]");
+    fAnalysisManager->CreateNtupleDColumn(i, "t ["+fUnits->GetTimeUnitLabel()+"]");
 
-    fAnalysisManager->CreateNtuple(particle , particle + " phase space");
-
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "px ["+fUnits->GetMomentumUnitLabel()+"/c]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "py ["+fUnits->GetMomentumUnitLabel()+"/c]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "pz ["+fUnits->GetMomentumUnitLabel()+"/c]");
-    fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
-
-    fAnalysisManager->FinishNtuple(currentNtupleId);
-
-    // save correspondance between particle and Ntuple ID
-    fDiagSurfacePhaseSpaceMap.Insert(fParticleTable->FindParticle(particle), currentNtupleId);
-  } else {
-    G4cerr << "Unknown particle : " << particle << G4endl;
-    throw;
+    fAnalysisManager->FinishNtuple(i);
   }
 }
-
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagVolumeEnergyDeposition(G4String particle)
-// {
-//   //
-// }
-//
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::CreateDiagVolumeProcess(const G4String process)
-// {
-//   // create Ntuples
-//   G4int currentNtupleId = fDiagVolumeProcessMap.Size();
-//
-//   fAnalysisManager->CreateNtuple(process , process + " location");
-//
-//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "Weight");
-//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "x ["+fUnits->GetPositionUnitLabel()+"]");
-//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "y ["+fUnits->GetPositionUnitLabel()+"]");
-//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "z ["+fUnits->GetPositionUnitLabel()+"]");
-//   fAnalysisManager->CreateNtupleDColumn(currentNtupleId, "t ["+fUnits->GetTimeUnitLabel()+"]");
-//
-//   fAnalysisManager->FinishNtuple(currentNtupleId);
-//
-//   // save correspondance between particle and Ntuple ID
-//   fDiagVolumeProcessMap[process] = currentNtupleId;
-// }
 
 // methods to fill diagnostics
 
@@ -158,12 +141,15 @@ void Diagnostics::CreateDiagSurfacePhaseSpace(G4String particle)
 void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
 {
   // Test for filling the diag
-  if (fDiagSurfacePhaseSpaceMap.Has(part) &&                    // The diag has been activated for this particle
-      stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
+  if (stepPoint->GetStepStatus() == fGeomBoundary &&            // The step is limited by the geometry
       stepPoint->GetKineticEnergy() > GetLowEnergyLimit())      // The particle's kinetic energy is higher than given threshold
   {
     // Get corresponding diag id
-    G4int currentNtupleId = fDiagSurfacePhaseSpaceMap[part];
+    G4int NtupleID=-1;
+
+    if (part == fElectron) NtupleID=0;
+    if (part == fGamma)    NtupleID=1;
+    if (part == fPositron) NtupleID=2;
 
     // Get simulation units
     G4double rUnit = fUnits->GetPositionUnitValue();
@@ -177,63 +163,21 @@ void Diagnostics::FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, co
     G4double      t   = stepPoint->GetGlobalTime();
 
     // Fill the Ntuple
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,0,w); // weight by event
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,1,r[0]/rUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,2,r[1]/rUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,3,r[2]/rUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,4,p[0]/pUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,5,p[1]/pUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,6,p[2]/pUnit);
-    fAnalysisManager->FillNtupleDColumn(currentNtupleId,7,t/tUnit);
+    if (NtupleID!=-1)
+    {
+      fAnalysisManager->FillNtupleDColumn(NtupleID,0,w); // weight by event
+      fAnalysisManager->FillNtupleDColumn(NtupleID,1,r[0]/rUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,2,r[1]/rUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,3,r[2]/rUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,4,p[0]/pUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,5,p[1]/pUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,6,p[2]/pUnit);
+      fAnalysisManager->FillNtupleDColumn(NtupleID,7,t/tUnit);
 
-    fAnalysisManager->AddNtupleRow(currentNtupleId);
+      fAnalysisManager->AddNtupleRow(NtupleID);
+    }
   }
 }
-
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4StepPoint* stepPoint)
-// {
-//   //
-// }
-//
-// //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeProcess(const G4String process, const G4StepPoint* stepPoint)
-// {
-//   G4int stepStatus = stepPoint->GetStepStatus();
-//
-//   if (fDiagVolumeProcessMap.Has(process) &&                     // The diag has been activated for this process
-//       (stepStatus == fAlongStepDoItProc ||                      // The particle's kinetic energy is higher than given threshold
-//       stepStatus == fPostStepDoItProc ||                        // The particle's kinetic energy is higher than given threshold
-//       stepStatus == fExclusivelyForcedProc) &&                  // The particle's kinetic energy is higher than given threshold
-//       stepPoint->GetProcessDefinedStep()->GetProcessName() == process)// The step is limited by the right process
-//   {
-//     // Get corresponding diag id
-//     G4int currentNtupleId = fDiagVolumeProcessMap[process];
-//
-//     // Get simulation units
-//     G4double rUnit = fUnits->GetPositionUnitValue();
-//     G4double tUnit = fUnits->GetTimeUnitValue();
-//
-//     // Get the particle properties
-//     G4double      w   = stepPoint->GetWeight();
-//     G4ThreeVector r   = stepPoint->GetPosition();
-//     G4double      t   = stepPoint->GetGlobalTime();
-//
-//     // Fill the Ntuple
-//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,0,w); // weight by event
-//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,1,r[0]/rUnit);
-//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,2,r[1]/rUnit);
-//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,3,r[2]/rUnit);
-//     fAnalysisManager->FillNtupleDColumn(currentNtupleId,7,t/tUnit);
-//
-//     fAnalysisManager->AddNtupleRow(currentNtupleId);
-//   }
-// }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// void Diagnostics::FillDiagVolumeNeutronProduction(const G4ParticleDefinition* part, const G4Step* stepPoint)
-// {}
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
@@ -278,10 +222,10 @@ void Diagnostics::SetCommands()
                                 "Change low energy limit");
 
 
-  G4GenericMessenger::Command& createDiagSurfacePhaseSpaceCmd
-    = fMessenger->DeclareMethod("createDiagSurfacePhaseSpace",
-                                &Diagnostics::CreateDiagSurfacePhaseSpace,
-                                "Activate phase space export at target interfaces, for given particle");
+  // G4GenericMessenger::Command& createDiagSurfacePhaseSpaceCmd
+  //   = fMessenger->DeclareMethod("createDiagSurfacePhaseSpace",
+  //                               &Diagnostics::CreateDiagSurfacePhaseSpace,
+  //                               "Activate phase space export at target interfaces, for given particle");
 
   // G4GenericMessenger::Command& createDiagVolumeEnergyDepositionCmd
   //   = fMessenger->DeclareMethod("createDiagVolumeEnergyDeposition",
@@ -302,7 +246,7 @@ void Diagnostics::SetCommands()
   setLowEnergyLimitCmd.SetDefaultValue("0.");
   // setLowEnergyLimitCmd.SetUnitCategory("Energy");
 
-  createDiagSurfacePhaseSpaceCmd.SetStates(G4State_Idle);
+  // createDiagSurfacePhaseSpaceCmd.SetStates(G4State_Idle);
   // createDiagVolumeEnergyDepositionCmd.SetStates(G4State_Idle);
   // createDiagVolumeProcessCmd.SetStates(G4State_Idle);
 }

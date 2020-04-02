@@ -34,7 +34,7 @@
 # Define diagnostics
 /diags/setFileBaseName test
 /diags/setLowEnergyLimit 0 keV
-/diags/createDiagSurfacePhaseSpace e-
+#/diags/createDiagSurfacePhaseSpace e-
 
 # Launch particles
 /run/beamOn 100000

@@ -57,15 +57,10 @@ class Diagnostics
 
     // user methods
     // methods to create diagnostics
-    void CreateDiagSurfacePhaseSpace(G4String particle);
-    // void CreateDiagVolumeEnergyDeposition(G4String particle);
-    // void CreateDiagVolumeProcess(const G4String process);
+    void CreateDiagSurfacePhaseSpace();
 
     // methods to fill diagnostics
     void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagVolumeEnergyDeposition(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
-    // void FillDiagVolumeProcess(const G4String process, const G4StepPoint* stepPoint);
-
 
     // methods to write output file
     void InitializeAllDiags();
@@ -84,6 +79,9 @@ class Diagnostics
     G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
     G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
     G4ParticleTable* fParticleTable; /**< \brief Pointer to the G4ParticleTable instance.*/
+    const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
+    const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
+    const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
 
     // User pointers
     Units* fUnits; /**< \brief Pointer to the Units instance.*/
@@ -92,11 +90,7 @@ class Diagnostics
     G4String fOutputFileBaseName; /**< \brief Output file base name.*/
     G4double fLowEnergyLimit; /**< \brief Lower energy to fill diagnostics.*/
 
-    G4MapCache <const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
-    // std::map<const G4ParticleDefinition*, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
-    // std::map<const G4String, G4int> fDiagSurfacePhaseSpaceMap;  /**< \brief .*/
-    // G4MapCache <const G4ParticleDefinition*, G4int> fDiagVolumeEnergyDepositionMap;  /**< \brief .*/
-    // G4MapCache <const G4String, G4int> fDiagVolumeProcessMap;  /**< \brief .*/
+    G4bool fDiagSurfacePhaseSpaceActivation;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

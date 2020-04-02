@@ -27,7 +27,7 @@ E_exp, S_0, err_0, S_10, err_10, S_30, err_30, S_60, err_60, S_90, err_90 = np.l
 E0 = 0.145 # MeV
 A0 = 0.4 # deg
 # angle = [0,10,30,60,90]
-angle = [0,10,30,60]
+angle = [0,10,30]
 
 # Get simulation results
 gps = p2sat.datasets.PhaseSpace(specie="gamma", unit_system="UHI")

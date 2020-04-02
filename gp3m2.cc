@@ -87,7 +87,7 @@ int main(int argc,char** argv)
     G4cerr << " gp3m2 -i        :"
            << " launch the application in interactive mode (default)" << G4endl;
     G4cerr << " gp3m2 -v        :"
-           << " launch the application in visualization mode" << G4endl;
+           << " launch the application in visualization mode (default)" << G4endl;
     G4cerr << " gp3m2 -m macro  :"
            << " launch the macro file `macro`" << G4endl;
     G4cerr << G4endl;

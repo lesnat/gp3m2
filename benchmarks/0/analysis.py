@@ -8,7 +8,7 @@ import benchmark
 # Import results and reference input file
 sim = benchmark.Data(specie="e-")
 ref = benchmark.Data(specie="e-")
-sim.extract_G4("test_nt_e-_t*.csv",nthreads=2)
+sim.extract_G4("test_nt_electron_t*.csv",nthreads=2)
 ref.extract_txt("input.dat")
 
 # Define number of events
