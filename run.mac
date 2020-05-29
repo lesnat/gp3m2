@@ -33,8 +33,5 @@
 #
 /diags/setFileBaseName test
 /diags/setLowEnergyLimit 10 keV
-/diags/createDiagSurfacePhaseSpace electron
-/diags/createDiagSurfacePhaseSpace gamma
-/diags/createDiagSurfacePhaseSpace positron
 #
 /run/beamOn 100
