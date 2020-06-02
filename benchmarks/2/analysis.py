@@ -37,9 +37,9 @@ gps.load.gp3m2_csv("Al")
 # Plot spectra (number/MeV/sr/incident e-) for each angle
 for a in angle:
     # Selecting all the particle on a ring with theta between a-A0 and a+A0
-    omega_min = 2*np.pi * (1 - np.cos(np.radians(max(a-A0,0)))) # the minimum theta angle is 0
-    omega_max = 2*np.pi * (1 - np.cos(np.radians(a+A0)))
-    domega=omega_max-omega_min
+    omega_min = 2 * (1 - np.cos(np.radians(max(a-A0,0)))) # the minimum theta angle is 0
+    omega_max = 2 * (1 - np.cos(np.radians(a+A0)))
+    domega=np.pi*(omega_max-omega_min)
     select=dict(omegax=[omega_min,omega_max],x=36000)
 
     # Get the desired spectra
