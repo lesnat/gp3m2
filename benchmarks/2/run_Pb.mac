@@ -1,0 +1,47 @@
+# Macro file for gp3m2
+#
+# Can be run in batch, without graphic
+# or interactively: Idle> /control/execute run.mac
+#
+# Change the default number of workers (in multi-threading mode)
+/run/numberOfThreads 20
+
+# Define simulation units
+/units/setPositionUnit um
+/units/setMomentumUnit MeV
+/units/setTimeUnit fs
+
+# Initialize kernel
+/run/initialize
+
+# Define verbosities
+/control/verbose 1
+/run/verbose 1
+/event/verbose 0
+/tracking/verbose 0
+/run/printProgress 50000
+
+# Define propagation axis
+/target/setPropagationAxis x
+
+# Build target
+/target/setRadius 16000
+/target/addLayer G4_Pb 8000
+
+# Define physics list
+/physics/setPhysicsList standard
+
+# Define input source
+/input/setFileName input.dat
+/input/setParticle e-
+
+# Define diagnostics
+/diags/setFileBaseName Pb
+#/diags/setLowEnergyLimit 145 keV
+#/diags/createDiagSurfacePhaseSpace gamma
+
+# Set cuts
+/run/setCut 1 mm
+
+# Launch particles
+/run/beamOn 5000000
