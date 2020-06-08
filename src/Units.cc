@@ -23,17 +23,74 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file Analysis.hh
-/// \brief Selection of the analysis technology
+/// \file Units.cc
+/// \brief Implementation of the Units class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef Analysis_h
-#define Analysis_h 1
+#include "Units.hh"
+#include "G4GenericMessenger.hh"
 
-// #include "g4root.hh"
-// #include "g4xml.hh"
-#include "g4csv.hh"
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+/**
+\brief Create analysis manager, Ntuples and set UI commands.
+
+*/
+Units::Units()
+: fMessenger(nullptr),
+  fPositionUnitLabel(""),
+  fMomentumUnitLabel(""),
+  fTimeUnitLabel("")
+{
+  SetCommands();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief Delete analysis manager.
+
+*/
+Units::~Units()
+{
+  delete fMessenger;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+/**
+\brief Define UI commands.
+
+The input file name can be changed by using
+
+*/
+void Units::SetCommands()
+{
+  // get UI messengers
+  fMessenger = new G4GenericMessenger(this,"/units/","Manage simulation units");
+
+  // define commands
+  G4GenericMessenger::Command& setPositionUnitCmd
+    = fMessenger->DeclareMethod("setPositionUnit",
+                                &Units::SetPositionUnit,
+                                "Change units of the positions");
+
+  G4GenericMessenger::Command& setMomentumUnitCmd
+    = fMessenger->DeclareMethod("setMomentumUnit",
+                                &Units::SetMomentumUnit,
+                                "Change units of the momentums (in unit/c)");
+
+  G4GenericMessenger::Command& setTimeUnitCmd
+    = fMessenger->DeclareMethod("setTimeUnit",
+                                &Units::SetTimeUnit,
+                                "Change units of the times");
+
+  // set commands properties
+  setPositionUnitCmd.SetStates(G4State_PreInit);
+  setMomentumUnitCmd.SetStates(G4State_PreInit);
+  setTimeUnitCmd.SetStates(G4State_PreInit);
+}

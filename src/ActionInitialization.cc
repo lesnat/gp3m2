@@ -32,8 +32,10 @@
 #include "ActionInitialization.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
-// #include "TrackingAction.hh"
 #include "SteppingAction.hh"
+#include "Units.hh"
+#include "InputReader.hh"
+#include "Diagnostics.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -41,9 +43,9 @@
 \brief
 
 */
-ActionInitialization::ActionInitialization()
+ActionInitialization::ActionInitialization(Units* units)
 : G4VUserActionInitialization(),
-  fMasterRunAction(new RunAction)
+  fUnits(units)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -63,7 +65,7 @@ ActionInitialization::~ActionInitialization()
 */
 void ActionInitialization::BuildForMaster() const
 {
-  SetUserAction(fMasterRunAction);
+  // SetUserAction(new RunAction);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,11 +76,11 @@ void ActionInitialization::BuildForMaster() const
 */
 void ActionInitialization::Build() const
 {
-  RunAction* runAction = new RunAction;
-  SetUserAction(runAction);
-  SetUserAction(new PrimaryGeneratorAction(runAction));
-  // SetUserAction(new TrackingAction());
-  SetUserAction(new SteppingAction(runAction));
+  InputReader* inputReader = new InputReader(fUnits);
+  Diagnostics* diagnostics = new Diagnostics(fUnits);
+  SetUserAction(new RunAction(fUnits, inputReader, diagnostics));
+  SetUserAction(new PrimaryGeneratorAction(inputReader));
+  SetUserAction(new SteppingAction(diagnostics));
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

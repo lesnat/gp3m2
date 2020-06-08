@@ -29,16 +29,13 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
-#else
-#include "G4RunManager.hh"
-#endif
 
 #include "G4UImanager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+#include "Units.hh"
 #include "DetectorConstruction.hh"
 #include "PhysicsList.hh"
 #include "ActionInitialization.hh"
@@ -48,44 +45,30 @@
 int main(int argc,char** argv)
 {
   // construct the default run manager
-  #ifdef G4MULTITHREADED
-    G4MTRunManager* runManager = new G4MTRunManager;
-  #else
-    G4RunManager* runManager = new G4RunManager;
-  #endif
+  G4MTRunManager* runManager = new G4MTRunManager;
+
+  Units* units = new Units();
 
   // set mandatory initialization classes
-  runManager->SetUserInitialization(new DetectorConstruction);
+  runManager->SetUserInitialization(new DetectorConstruction(units));
   runManager->SetUserInitialization(new PhysicsList);
 
   // set user action classes
-  runManager->SetUserInitialization(new ActionInitialization);
+  runManager->SetUserInitialization(new ActionInitialization(units));
 
   // get the pointer to the User Interface manager
   G4UImanager* UImanager = G4UImanager::GetUIpointer();
 
   // launch the app with the choosen mode
   G4String mode = argv[1];
-  if (mode=="-i" or argc==1)         // interactive mode (default)
-  {
-    // initialize interactive session
-    UImanager->ApplyCommand("/control/execute init.mac");
-
-    // start interactive session
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
-    ui->SessionStart();
-    delete ui;
-  }
-  else if (mode=="-v")               // visualization mode
+  if (mode=="-v" or argc==1)               // visualization mode (default)
   {
     // initialize interactive session and visualization
     G4VisManager* visManager = new G4VisExecutive;
-    //visManager->Initialize();
-    //UImanager->ApplyCommand("/control/execute init.mac");
     UImanager->ApplyCommand("/control/execute init_vis.mac");
 
     // start interactive session
-    G4UIExecutive* ui = new G4UIExecutive(argc, argv);
+    G4UIExecutive* ui = new G4UIExecutive(1, &argv[0]);
     ui->SessionStart();
     delete ui;
     delete visManager;
@@ -104,7 +87,7 @@ int main(int argc,char** argv)
     G4cerr << " gp3m2 -i        :"
            << " launch the application in interactive mode (default)" << G4endl;
     G4cerr << " gp3m2 -v        :"
-           << " launch the application in visualization mode" << G4endl;
+           << " launch the application in visualization mode (default)" << G4endl;
     G4cerr << " gp3m2 -m macro  :"
            << " launch the macro file `macro`" << G4endl;
     G4cerr << G4endl;

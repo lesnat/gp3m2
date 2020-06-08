@@ -34,7 +34,7 @@
 
 #include "G4VUserActionInitialization.hh"
 
-class RunAction;
+class Units;
 
 /**
 \brief Instanciate user classes in master or worker threads
@@ -44,7 +44,7 @@ This class is instanciated only once
 class ActionInitialization : public G4VUserActionInitialization
 {
   public:
-    ActionInitialization();
+    ActionInitialization(Units* units);
     virtual ~ActionInitialization();
 
     // base class methods
@@ -52,7 +52,10 @@ class ActionInitialization : public G4VUserActionInitialization
     virtual void Build() const;
 
   private:
-    RunAction* fMasterRunAction;
+    // Geant4 pointers
+    // User pointers
+    Units* fUnits;
+    // User variables
 };
 
 #endif

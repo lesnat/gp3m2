@@ -32,57 +32,48 @@
 
 #include "SteppingAction.hh"
 #include "RunAction.hh"
+#include "Diagnostics.hh"
 
 #include "G4SteppingManager.hh" // includes all the needed classes for SteppingAction
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 /**
-\brief Save pointer to the current RunAction instance.
+\brief Save pointer to the current Diagnostics instance.
 
 */
-SteppingAction::SteppingAction(RunAction* runAction)
+SteppingAction::SteppingAction(Diagnostics* diagnostics)
 : G4UserSteppingAction(),
-  fRunAction(runAction)
+  fDiagnostics(diagnostics)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
-\brief Delete pointer to the current RunAction instance.
+\brief Do nothing.
 
 */
 SteppingAction::~SteppingAction()
-{
-  //delete fRunAction;
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#include "G4SystemOfUnits.hh"
 
 /**
-\brief Add a new line to the corresponding Ntuple
-       if the particle is crossing a boundary.
+\brief Call the Diagnostics FillDiagXXX methods if they are activated.
 
 This virtual method is called at each Step ends.
 */
 void SteppingAction::UserSteppingAction(const G4Step* aStep)
 {
-  G4StepPoint* postStepPoint = aStep->GetPostStepPoint();
+  // Get step points
+  // G4StepPoint* stepPoint = aStep->GetPostStepPoint();
+  G4StepPoint* stepPoint = aStep->GetPreStepPoint();
 
+  // Retrieve particle type
   G4Track* aTrack = aStep->GetTrack();
-  const G4ParticleDefinition* particle =
-    aTrack->GetDynamicParticle()->GetDefinition();
+  const G4ParticleDefinition* particle = aTrack->GetDynamicParticle()->GetDefinition();
 
-  if (postStepPoint->GetStepStatus() == fGeomBoundary &&
-      postStepPoint->GetKineticEnergy() > fRunAction->GetLowEnergyLimit())
-  {
-    G4double      weight    = postStepPoint->GetWeight();
-    G4ThreeVector position  = postStepPoint->GetPosition();
-    G4ThreeVector momentum  = postStepPoint->GetMomentum();
-    G4double      time      = postStepPoint->GetGlobalTime();
-
-    fRunAction->FillData(particle,weight,position,momentum,time);
-  }
+  // Fill diagnostics if they are activated
+  fDiagnostics->FillDiagSurfacePhaseSpace(particle, stepPoint);
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -34,7 +34,7 @@
 
 #include "G4UserSteppingAction.hh"
 
-class RunAction;
+class Diagnostics;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
@@ -46,14 +46,19 @@ This class is instanciated in each worker thread
 class SteppingAction : public G4UserSteppingAction
 {
   public:
-    SteppingAction(RunAction* runAction);
+    SteppingAction(Diagnostics* diagnostics);
    ~SteppingAction();
 
    // base class methods
     virtual void UserSteppingAction(const G4Step*);
 
   private:
-    RunAction* fRunAction; /**< \brief Pointer to the RunAction instance of the current thread.*/
+    // Geant4 pointers
+
+    // User pointers
+    Diagnostics* fDiagnostics; /**< \brief Pointer to the Diagnostics instance of the current thread.*/
+
+    // User variables
 };
 
 #endif

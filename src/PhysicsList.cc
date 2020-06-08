@@ -32,9 +32,10 @@
 #include "PhysicsList.hh"
 
 #include "G4EmPenelopePhysics.hh"
+#include "G4EmStandardPhysics.hh"
 
 #include "G4SystemOfUnits.hh"
-
+#include "G4GenericMessenger.hh"
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /**
@@ -42,16 +43,16 @@
 
 */
 PhysicsList::PhysicsList()
-: G4VModularPhysicsList()
+: G4VModularPhysicsList(),
+  fPhysicsList(nullptr),
+  fMessenger(nullptr)
 {
   // set default cut value
   SetDefaultCutValue(1.0*um);
-
   SetVerboseLevel(1);
-
   // EM physics
-  //fEmPhysicsList = new PhysListLocal();
-  fEmPhysicsList = new G4EmPenelopePhysics();
+  SetPhysicsList("penelope");
+  SetCommands();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -62,7 +63,8 @@ PhysicsList::PhysicsList()
 */
 PhysicsList::~PhysicsList()
 {
-  delete fEmPhysicsList;
+  delete fPhysicsList;
+  delete fMessenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -74,7 +76,7 @@ The list of particles is taken from choosen pre-packaged PhysicsList.
 */
 void PhysicsList::ConstructParticle()
 {
-  fEmPhysicsList->ConstructParticle();
+  fPhysicsList->ConstructParticle();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -90,7 +92,7 @@ void PhysicsList::ConstructProcess()
   AddTransportation();
 
   // Electromagnetic physics list
-  fEmPhysicsList->ConstructProcess();
+  fPhysicsList->ConstructProcess();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -107,5 +109,46 @@ void PhysicsList::SetCuts()
 
  DumpCutValuesTable();
 }
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PhysicsList::SetPhysicsList(G4String name)
+{
+  if (name == "penelope")
+  {
+    fPhysicsList = new G4EmPenelopePhysics();
+  }
+  else if (name == "standard")
+  {
+    fPhysicsList = new G4EmStandardPhysics();
+  }
+  else
+  {
+    G4cerr << "Unknown physics list name : " << name << G4endl;
+  }
 
+  G4cout << "Physics list has been modified to : " << name << G4endl;
+}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief Set commands to be interpreted with the UI
+
+The setPhysicsList function can be called in UI in the following way :
+
+/physics/setPhysicsList str
+*/
+void PhysicsList::SetCommands()
+{
+  // get UI messengers
+  fMessenger = new G4GenericMessenger(this,"/physics/","Change physics list");
+
+  // define commands
+  G4GenericMessenger::Command& setPhysicsListCmd
+    = fMessenger->DeclareMethod("setPhysicsList",
+                                &PhysicsList::SetPhysicsList,
+                                "Change physics list");
+
+  // set commands properties
+  setPhysicsListCmd.SetStates(G4State_Idle);
+
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
