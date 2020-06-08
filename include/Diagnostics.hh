@@ -23,42 +23,74 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file PrimaryGeneratorAction.hh
-/// \brief Definition of the PrimaryGeneratorAction class
+/// \file Diagnostics.hh
+/// \brief Definition of the Diagnostics class
 //
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#ifndef PrimaryGeneratorAction_h
-#define PrimaryGeneratorAction_h 1
+#ifndef Diagnostics_h
+#define Diagnostics_h 1
 
-#include "G4VUserPrimaryGeneratorAction.hh"
+// selection of the analysis manager output format
+// #include "g4root.hh"
+// #include "g4xml.hh"
+#include "g4csv.hh"
 
+class G4ParticleDefinition;
 class G4ParticleTable;
-class InputReader;
+class Units;
+
+#include "G4GenericMessenger.hh"
+#include "G4Cache.hh"
+#include "G4StepPoint.hh"
 
 /**
-\brief Generate primary particles.
+\brief Creates and writes diagnostic output files.
 
-This class is instanciated in each worker thread.
 */
-class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction
+class Diagnostics
 {
   public:
-    PrimaryGeneratorAction(InputReader* inputReader);
-    ~PrimaryGeneratorAction();
+    Diagnostics(Units* units);
+    ~Diagnostics();
 
-    // base class methods
-    virtual void GeneratePrimaries(G4Event*);
+    // user methods
+    // methods to create diagnostics
+    void CreateDiagSurfacePhaseSpace();
+
+    // methods to fill diagnostics
+    void FillDiagSurfacePhaseSpace(const G4ParticleDefinition* part, const G4StepPoint* stepPoint);
+
+    // methods to write output file
+    void InitializeAllDiags();
+    void FinishAllDiags();
+    void SetCommands();
+
+    // get/set methods
+    // methods to retrieve diag activation
+    void SetOutputFileBaseName(G4String outputFileBaseName) {fOutputFileBaseName = outputFileBaseName;};
+
+    // methods to retrieve low and high energy limits
+    G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
 
   private:
     // Geant4 pointers
-    G4ParticleTable* fParticleTable;
+    G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
+    G4GenericMessenger* fMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
+    G4ParticleTable* fParticleTable; /**< \brief Pointer to the G4ParticleTable instance.*/
+    const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
+    const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
+    const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
 
     // User pointers
-    InputReader* fInputReader;
+    Units* fUnits; /**< \brief Pointer to the Units instance.*/
 
     // User variables
+    G4String fOutputFileBaseName; /**< \brief Output file base name.*/
+    G4double fLowEnergyLimit; /**< \brief Lower energy to fill diagnostics.*/
+
+    G4bool fDiagSurfacePhaseSpaceActivation;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

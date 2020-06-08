@@ -33,64 +33,43 @@
 #define RunAction_h 1
 
 #include "G4UserRunAction.hh"
-#include "Analysis.hh"
 #include "G4ThreeVector.hh"
 
 class G4Run;
 class G4ParticleDefinition;
+class Units;
+class InputReader;
+class Diagnostics;
 #include "G4GenericMessenger.hh"
 
 /**
-\brief Creates and writes diagnostic output files.
+\brief Deal with input file reading and diagnostic creation.
 
 */
 class RunAction : public G4UserRunAction
 {
   public:
-    RunAction();
+    RunAction(Units* units, InputReader* inputReader, Diagnostics* diagnostics);
     ~RunAction();
 
     // base class methods
     virtual void BeginOfRunAction(const G4Run* aRun);
     virtual void   EndOfRunAction(const G4Run*);
 
-    // user methods
-    void FillData(const G4ParticleDefinition* part,
-                  G4double weight,
-                  G4ThreeVector position,
-                  G4ThreeVector momentum,
-                  G4double time);
-    void SetCommands();
-    void ReadInput(G4int NbOfEvents);
-
     // get/set methods
-    G4double GetEntry(G4String variable, G4int id) const
-    { if      (variable=="w")  return fW[id];
-      else if (variable=="x")  return fX[id];
-      else if (variable=="y")  return fY[id];
-      else if (variable=="z")  return fZ[id];
-      else if (variable=="px") return fPx[id];
-      else if (variable=="py") return fPy[id];
-      else if (variable=="pz") return fPz[id];
-      else if (variable=="t")  return fT[id];
-      else G4cerr << "Unknown variable name in RunAction::GetEntry."<< G4endl; throw;};
-    G4int GetLength() const {return fW.size();};
-    G4GenericMessenger* GetInMessenger() {return fInMessenger;};
-    G4GenericMessenger* GetOutMessenger() {return fOutMessenger;};
-    G4double GetLowEnergyLimit() {return fLowEnergyLimit;};
+    InputReader* GetInputReader() {return fInputReader;};
+    Diagnostics* GetDiagnostics() {return fDiagnostics;};
 
   private:
-    G4AnalysisManager* fAnalysisManager; /**< \brief Pointer to the G4AnalysisManager instance.*/
-    G4String fOutFileName; /**< \brief Output file name.*/
-    G4String fInFileName; /**< \brief Input file name.*/
-    const G4ParticleDefinition* fGamma; /**< \brief Gamma particle definition.*/
-    const G4ParticleDefinition* fElectron; /**< \brief Electron particle definition.*/
-    const G4ParticleDefinition* fPositron; /**< \brief Positron particle definition.*/
-    G4GenericMessenger* fOutMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the output file.*/
-    G4GenericMessenger* fInMessenger; /**< \brief Pointer to the G4GenericMessenger instance for the input file.*/
-    G4double fLowEnergyLimit;
+    // Geant4 pointers
 
-    std::vector<G4double> fW,fX,fY,fZ,fPx,fPy,fPz,fT;
+    // User pointers
+    Units* fUnits; /**< \brief Pointer to the Units instance.*/
+    InputReader* fInputReader; /**< \brief Pointer to the InputReader instance.*/
+    Diagnostics* fDiagnostics; /**< \brief Pointer to the Diagnostics instance.*/
+
+    // User variables
+
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

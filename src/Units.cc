@@ -23,37 +23,74 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// $Id: PhysicsListSimple.hh 105735 2017-08-16 12:59:43Z gcosmo $
-
-#ifndef PhysicsListSimple_h
-#define PhysicsListSimple_h 1
-
-#include "G4VPhysicsConstructor.hh"
-#include "G4EmParticleList.hh"
-#include "globals.hh"
-
-class G4ParticleDefinition;
+/// \file Units.cc
+/// \brief Implementation of the Units class
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-class PhysicsListSimple : public G4VPhysicsConstructor
+#include "Units.hh"
+#include "G4GenericMessenger.hh"
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+/**
+\brief Create analysis manager, Ntuples and set UI commands.
+
+*/
+Units::Units()
+: fMessenger(nullptr),
+  fPositionUnitLabel(""),
+  fMomentumUnitLabel(""),
+  fTimeUnitLabel("")
 {
-public:
-
-  PhysicsListSimple();
-
-  virtual ~PhysicsListSimple();
-
-  virtual void ConstructParticle();
-  virtual void ConstructProcess();
-
-private:
-  G4ParticleDefinition* fGamma;
-  G4ParticleDefinition* fElectron;
-  G4ParticleDefinition* fPositron;
-  // G4int  verbose;
-  // G4EmParticleList partList;
-};
+  SetCommands();
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-#endif
+/**
+\brief Delete analysis manager.
+
+*/
+Units::~Units()
+{
+  delete fMessenger;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+/**
+\brief Define UI commands.
+
+The input file name can be changed by using
+
+*/
+void Units::SetCommands()
+{
+  // get UI messengers
+  fMessenger = new G4GenericMessenger(this,"/units/","Manage simulation units");
+
+  // define commands
+  G4GenericMessenger::Command& setPositionUnitCmd
+    = fMessenger->DeclareMethod("setPositionUnit",
+                                &Units::SetPositionUnit,
+                                "Change units of the positions");
+
+  G4GenericMessenger::Command& setMomentumUnitCmd
+    = fMessenger->DeclareMethod("setMomentumUnit",
+                                &Units::SetMomentumUnit,
+                                "Change units of the momentums (in unit/c)");
+
+  G4GenericMessenger::Command& setTimeUnitCmd
+    = fMessenger->DeclareMethod("setTimeUnit",
+                                &Units::SetTimeUnit,
+                                "Change units of the times");
+
+  // set commands properties
+  setPositionUnitCmd.SetStates(G4State_PreInit);
+  setMomentumUnitCmd.SetStates(G4State_PreInit);
+  setTimeUnitCmd.SetStates(G4State_PreInit);
+}

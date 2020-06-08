@@ -31,7 +31,6 @@
 
 #include "PhysicsList.hh"
 
-// #include "PhysicsListSimple.hh"
 #include "G4EmPenelopePhysics.hh"
 #include "G4EmStandardPhysics.hh"
 
@@ -45,7 +44,8 @@
 */
 PhysicsList::PhysicsList()
 : G4VModularPhysicsList(),
-  fMessenger(0)
+  fPhysicsList(nullptr),
+  fMessenger(nullptr)
 {
   // set default cut value
   SetDefaultCutValue(1.0*um);
@@ -112,11 +112,7 @@ void PhysicsList::SetCuts()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PhysicsList::SetPhysicsList(G4String name)
 {
-  if (name == "simple")
-  {
-    //fPhysicsList = new PhysicsListSimple();
-  }
-  else if (name == "penelope")
+  if (name == "penelope")
   {
     fPhysicsList = new G4EmPenelopePhysics();
   }

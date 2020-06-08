@@ -5,21 +5,35 @@
 #
 # Change the default number of workers (in multi-threading mode)
 #/run/numberOfThreads 4
-#
+
+# Define simulation units
+/units/setPositionUnit um
+/units/setMomentumUnit MeV
+/units/setTimeUnit fs
+
 # Initialize kernel
 /run/initialize
-#
+
+# Define verbosities
 /control/verbose 1
 /run/verbose 1
 /event/verbose 0
 /tracking/verbose 0
 
+# Define propagation axis
+/target/setPropagationAxis x
+
+# Build target
 /target/addLayer G4_Galactic 50
-#
+
+# Define input source
 /input/setFileName input.dat
 /input/setParticle e-
 
-/output/setFileName test
-/output/setLowEnergyLimit 0 keV
+# Define diagnostics
+/diags/setFileBaseName test
+/diags/setLowEnergyLimit 0 keV
+#/diags/createDiagSurfacePhaseSpace e-
 
+# Launch particles
 /run/beamOn 1000

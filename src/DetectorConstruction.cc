@@ -29,6 +29,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+#include "Units.hh"
 #include "DetectorConstruction.hh"
 
 #include "G4NistManager.hh"
@@ -46,14 +47,16 @@
 \brief Initialize pointers, set default values and creates UI commands.
 
 */
-DetectorConstruction::DetectorConstruction()
+DetectorConstruction::DetectorConstruction(Units* units)
 : G4VUserDetectorConstruction(),
+  fMessenger(nullptr),
+  fWorldLV(nullptr),
+  fUnits(units),
   fNumberOfLayers(0),
-  fCheckOverlaps(true),
-  fTargetSizeX(0),
+  fPropagationAxis(""),
+  fTargetSizeLongi(0),
   fTargetRadius(5*cm),
-  fWorldLV(0),
-  fMessenger(0)
+  fCheckOverlaps(true)
 {
   // set UI commands
   SetCommands();
@@ -115,86 +118,34 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-/**
-\brief Add a new layer to the target.
-
-\param materialName : Material name of the new layer
-\param width : Width of the new layer (in um)
-
-The transverse size of the new layer is always the same default value.
-
-The new width is added to fTargetSizeX and fNumberOfLayers is incremented.
-*/
-// void DetectorConstruction::AddTargetLayer(G4String materialName,
-//                                           G4double targetWidth, G4String targetWidthUnit)
-// {
-//   G4NistManager* nist = G4NistManager::Instance();
-//   G4Material* layerMat = nist->FindOrBuildMaterial(materialName);
-//
-//   // G4bool checkOverlaps = true;
-//   G4double width = 0.;
-//   if (targetWidthUnit == "nm") {
-//     width = targetWidth * nm;
-//   } else if (targetWidthUnit == "um") {
-//     width = targetWidth * um;
-//   } else if (targetWidthUnit == "mm") {
-//     width = targetWidth * mm;
-//   } else if (targetWidthUnit == "cm") {
-//     width = targetWidth * cm;
-//   } else if (targetWidthUnit == "m") {
-//     width = targetWidth * m;
-//   } else {
-//     G4cerr << "Unknown width unit : " << targetWidthUnit << G4endl;
-//   }
-//
-//   // Create Layer solid
-//   G4Box* layerS =
-//     new G4Box("LayerS",                      // name
-//               width/2,                       // size X
-//               fTargetRadius/2,               // size Y
-//               fTargetRadius/2);              // size Z
-//
-//   // Create Layer logical volume
-//   G4LogicalVolume* layerLV =
-//     new G4LogicalVolume(layerS,              // solid
-//                         layerMat,            // material
-//                         "LayerLV");          // name
-//
-//   // New layer position
-//   G4ThreeVector position;
-//   position = G4ThreeVector(fTargetSizeX + width/2,0,0);
-//
-//   // Create Layer physical volume
-//   new G4PVPlacement(0,                     // no rotation
-//                     position,              // at (0,0,0)
-//                     layerLV,               // logical volume
-//                     "Layer",               // name
-//                     fWorldLV,              // mother  volume
-//                     false,                 // no boolean operation
-//                     fNumberOfLayers,       // copy number
-//                     fCheckOverlaps);       // overlaps checking
-//
-//   fTargetSizeX += width;
-//   fNumberOfLayers++;
-//
-// }
 void DetectorConstruction::AddTargetLayer(G4String materialName,
-                                          G4double targetWidth_um)
+                                          G4double targetWidth)
 {
+  // Retrieve the new layer material
   G4NistManager* nist = G4NistManager::Instance();
   G4Material* layerMat = nist->FindOrBuildMaterial(materialName);
 
-  // G4bool checkOverlaps = true;
-  G4double width = targetWidth_um * um;
+  // Test if the material was properly constructed
+  if (layerMat == nullptr)
+  {
+    G4cerr << "Unknown material : " << materialName << G4endl;
+    throw;
+  }
 
-  // Create Layer solid
-  // G4Box* layerS =
-  //   new G4Box("LayerS",                      // name
-  //             width/2,                       // size X
-  //             fTargetRadius/2,               // size Y
-  //             fTargetRadius/2);              // size Z
+  // Get layer longitudinal size;
+  G4double width = targetWidth * fUnits->GetPositionUnitValue();
 
+  // Matrix to rotate the cylinders in the fPropagationAxis direction
+  G4RotationMatrix* rotation = new G4RotationMatrix();
+  if (fPropagationAxis == "x") {
+    rotation->rotateY(90. * deg);
+  } else if (fPropagationAxis == "y") {
+    rotation->rotateX(90. * deg);
+  } else if (fPropagationAxis == "z") {
+    ; // Cylinder is already oriented along the z axis
+  }
+
+  // Create layer solid volume
   G4Tubs* layerS =
     new G4Tubs("layerS",                    // name
             0.,                             // inner radius
@@ -212,11 +163,7 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
 
   // New layer position
   G4ThreeVector position;
-  position = G4ThreeVector(fTargetSizeX + width/2,0,0);
-
-  // New layer rotation
-  G4RotationMatrix* rotation = new G4RotationMatrix();
-  rotation->rotateY(90. * deg);
+  position = G4ThreeVector(fTargetSizeLongi + width/2.,0,0);
 
   // Create Layer physical volume
   new G4PVPlacement(rotation,              // rotation
@@ -228,9 +175,9 @@ void DetectorConstruction::AddTargetLayer(G4String materialName,
                     fNumberOfLayers,       // copy number
                     fCheckOverlaps);       // overlaps checking
 
-  fTargetSizeX += width;
+  // Update target size and number of layers
+  fTargetSizeLongi += width;
   fNumberOfLayers++;
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -253,11 +200,16 @@ void DetectorConstruction::SetCommands()
                                 &DetectorConstruction::AddTargetLayer,
                                 "Add a new layer to the target");
   G4GenericMessenger::Command& setTargetRadiusCmd
-    = fMessenger->DeclareProperty("setTargetRadius",
-                                fTargetRadius,
+    = fMessenger->DeclareMethod("setRadius",
+                                &DetectorConstruction::SetTargetRadius,
                                 "Set target radius");
+  G4GenericMessenger::Command& setPropagationAxisCmd
+    = fMessenger->DeclareMethod("setPropagationAxis",
+                                &DetectorConstruction::SetPropagationAxis,
+                                "Make the targer layers being oriented along the propagation axis");
   // set commands properties
   setTargetRadiusCmd.SetStates(G4State_Idle);
+  setPropagationAxisCmd.SetStates(G4State_Idle);
   addLayerCmd.SetStates(G4State_Idle);
 
 }
