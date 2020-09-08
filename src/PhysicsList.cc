@@ -32,7 +32,7 @@
 #include "PhysicsList.hh"
 
 #include "G4EmPenelopePhysics.hh"
-#include "G4EmStandardPhysics.hh"
+#include "G4EmStandardPhysics_option4.hh"
 
 #include "G4SystemOfUnits.hh"
 #include "G4GenericMessenger.hh"
@@ -118,7 +118,7 @@ void PhysicsList::SetPhysicsList(G4String name)
   }
   else if (name == "standard")
   {
-    fPhysicsList = new G4EmStandardPhysics();
+    fPhysicsList = new G4EmStandardPhysics_option4();
   }
   else
   {
