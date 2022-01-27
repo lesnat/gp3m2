@@ -25,8 +25,8 @@ A0 = 0.4 # deg
 # angle = [0,10,30,60,90]
 angles = [0, 10, 30, 60]
 
-material = "Al"
-# material = "Pb"
+# material = "Al"
+material = "Pb"
 
 # Get experimental results
 # Based on the paper B. A. Faddegon, C. K. Ross, and D. W. O. Rogers, Medical Physics 18, 727 (1991).
